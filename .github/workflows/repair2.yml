@@ -1,0 +1,40 @@
+name: Final generator repair
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: "!contains(github.event.head_commit.message, '[repair2]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Fix generated upload handler
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          bad = "r.readAsDataURL(f)}});d.querySelector('.aesthetic-url').oninput=e=>{const u=e.target.value.trim();if(u)files[id]=u;else delete files[id]};"
+          good = "r.readAsDataURL(f)};d.querySelector('.aesthetic-url').oninput=e=>{const u=e.target.value.trim();if(u)files[id]=u;else delete files[id]};});"
+          if bad in s:
+              s = s.replace(bad, good, 1)
+
+          p.write_text(s, encoding='utf-8')
+          PY
+
+      - name: Commit repair
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || (git commit -m "fix: repair image URL handler [repair2]" && git push origin main)
