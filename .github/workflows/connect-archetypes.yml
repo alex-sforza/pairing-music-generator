@@ -13,83 +13,28 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Patch archetype engine
-        run: |
-          python - <<'PY'
-          from pathlib import Path
-          p = Path('music-archetypes.js')
-          text = p.read_text(encoding='utf-8')
-          marker = '\n/* PAIRING MUSIC ARCHETYPE ENGINE V2 */\n'
-          if marker in text:
-              raise SystemExit(0)
-          patch = r'''
-
-/* PAIRING MUSIC ARCHETYPE ENGINE V2 */
-(function(){
-  const relationWords = {
-    'Романтическое напряжение':['Velvet','Gravity','Hearts','Fever'],
-    'Соперничество':['Rivalry','Fire','Crown','Clash'],
-    'Нежность под сарказмом':['Honey','Static','Smile','Trouble'],
-    'Опасное притяжение':['Gravity','Vice','Sin','Fever'],
-    'Союз двух хаосов':['Beautiful','Chaos','Riot','Trouble'],
-    'Лучшие друзья с подозрительно сильной химией':['Midnight','Friends','Electric','Secret'],
-    'Двое против всего мира':['Outlaws','Together','Wild','Against'],
-    'Непроизнесённые чувства':['Silence','Echo','Almost','Secret']
-  };
-  function scoreArchetype(styles, archetype){
-    const selected = styles.map(s => String(s).toLowerCase()); let score = 0;
-    archetype.genres.forEach(g=>{const x=g.toLowerCase();if(selected.includes(x))score+=10;else if(selected.some(s=>s.includes(x)||x.includes(s)))score+=4;});
-    const families=[
-      [['glam','theatrical','visual','cabaret'],['Glam Rock','Glam Metal','Glam Punk','Theatrical Rock','Visual Kei','Dark Cabaret','Cabaret Rock']],
-      [['gothic','dark','witch','ritual'],['Gothic Rock','Gothic Metal','Darkwave','Dark Pop','Witch House','Ritual Ambient','Industrial Gothic']],
-      [['metal','core'],['Heavy Metal','Gothic Metal','Symphonic Metal','Power Metal','Progressive Metal','Metalcore','Deathcore','Black Metal','Death Metal']],
-      [['punk','riot'],['Punk Rock','Pop Punk','Hardcore Punk','Gothic Punk','Glam Punk']],
-      [['dream','ethereal','ambient'],['Dream Pop','Shoegaze','Ethereal','Ambient','Drone','Minimalist']],
-      [['electronic','synth','techno'],['Synthpop','Synthwave','Dark Synthwave','Techno','Industrial Techno','Electropop','Witch House']],
-      [['folk','celtic','medieval'],['Folk','Dark Folk','Neofolk','Celtic Folk','Medieval','Folk Metal']],
-      [['jazz','blues','soul'],['Jazz','Dark Jazz','Blues Rock','Soul','Funk','Jazz Rock']]
-    ];
-    families.forEach(([tokens,members])=>{if(styles.some(s=>tokens.some(t=>s.toLowerCase().includes(t))))score+=archetype.genres.filter(g=>members.includes(g)).length*2;});
-    return score;
-  }
-  window.findMusicArchetype=function(styles){if(!styles||!styles.length)return MUSIC_ARCHETYPES[0];let best=MUSIC_ARCHETYPES[0],bestScore=-1;MUSIC_ARCHETYPES.forEach(a=>{const score=scoreArchetype(styles,a);if(score>bestScore){best=a;bestScore=score;}});return best;};
-  window.getArchetypeProfile=function(styles,role,relation){const a=window.findMusicArchetype(styles);const roleBits={'вокалист / фронтмен':'считает сцену личной территорией','гитарист':'подозрительно часто решает проблемы соло','басист':'молчит ровно до тех пор, пока не включается бас','барабанщик':'решает эмоциональные вопросы ударными','клавишник':'контролирует атмосферу из тени','продюсер':'заранее знает, где именно всё станет великолепно','mastermind группы':'уже придумал три концептуальных альбома вперёд'};const rb=roleBits[role]||'вносит в эту музыкальную катастрофу собственный порядок';const relationBit=relation?` На фоне их отношений это особенно опасно: ${relation.toLowerCase()}.`:'';return{archetype:a,text:`${a.portrait} ${rb}.${relationBit}`,sound:a.sound};};
-  window.buildMusicBandName=function(styles,phrases){const a=window.findMusicArchetype(styles),words=[];(phrases||[]).forEach(p=>(relationWords[p]||[]).forEach(w=>words.push(w)));const unique=[...new Set([...(a.bandWords||[]),...words])];if(unique.length<2)return a.name;return `${unique[0]} ${unique.find(x=>x!==unique[0])||unique[1]}`;};
-  MUSIC_ARCHETYPES.forEach(a=>{a.keys=a.genres;a.fun=a.portrait;});
-})();
-'''
-          p.write_text(text + patch, encoding='utf-8')
-          PY
       - name: Repair relationship controls and image previews
         run: |
           python - <<'PY'
           from pathlib import Path
-          p = Path('index.html')
-          text = p.read_text(encoding='utf-8')
-          marker = '<!-- pairing-ui-repair-v3 -->'
-          if marker not in text:
-              patch = r'''<!-- pairing-ui-repair-v3 -->
+          p=Path('index.html'); s=p.read_text(encoding='utf-8')
+          marker='<!-- pairing-ui-repair-v3 -->'
+          if marker not in s:
+              patch=r'''<!-- pairing-ui-repair-v3 -->
 <script>
 (function(){
-  const RELATION_FEELINGS = [
-    ['Blood & Velvet','страсть, опасность и притяжение'],['Midnight Neon','ночная химия и электрическое напряжение'],['Cemetery Gold','мрачная роскошь и что-то почти святое'],['Electric Blue','холодная искра, которая всё равно бьёт током'],['Rust & Smoke','старые раны, дым и упрямое тепло'],['Victorian Noir','тайны, приличия и чувства, о которых нельзя говорить'],['Acid Green','хаос, дерзость и очень плохие решения'],['Moonlight','тихая близость, которую замечают только они'],['Crimson Devotion','преданность на грани одержимости'],['Silver Distance','чувства есть, но между ними километры'],['Golden Trouble','слишком красиво, чтобы быть хорошей идеей'],['Black Lace','опасная нежность и тщательно спрятанные эмоции'],['Violet Fever','романтика, странность и лёгкая потеря рассудка'],['White Noise','много невысказанного и слишком много мыслей'],['Burnt Sugar','сладость с привкусом катастрофы'],['Cold Fire','ледяная сдержанность и внезапные вспышки'],['Velvet Knife','нежность, которая умеет ранить'],['Neon Bruise','ярко, больно и почему-то хочется ещё'],['Holy Static','почти святое чувство с совершенно неправильным напряжением'],['Wild Honey','тепло, опасность и сладкая безрассудность'],['Grave Flowers','красота, выросшая из старых травм'],['Chrome Romance','глянец, дерзость и романтика будущего'],['Dusk & Gold','закатная меланхолия и драгоценная близость'],['Blackout Kiss','момент, который лучше не вспоминать слишком подробно'],['Storm & Silk','буря снаружи, мягкость только друг для друга'],['Paper Hearts','хрупкость, которую оба делают вид, что не замечают'],['Razor Smile','флирт, сарказм и опасная игра'],['Motel Moon','ночная свобода, бегство и случайная близость'],['Ash & Honey','после пожара всё равно осталось что-то сладкое'],['Blue Velvet','медленная чувственность и кинематографическая тоска']
-  ];
-  function render(id){const box=document.getElementById(id);if(!box||box.querySelector('.feeling-chip'))return;if(!box.children.length)return;}
-  function ensure(id){const box=document.getElementById(id);if(!box)return;if(!box.querySelector('.feeling-chip'))box.innerHTML=RELATION_FEELINGS.map(([n,d])=>'<button type="button" class="feeling-chip" data-feeling="'+n.replace(/"/g,'&quot;')+'"><strong>'+n+'</strong><small>'+d+'</small></button>').join('');if(box.dataset.repairBound==='1')return;box.dataset.repairBound='1';box.addEventListener('click',e=>{const chip=e.target.closest('.feeling-chip');if(!chip)return;e.preventDefault();e.stopPropagation();box.querySelectorAll('.feeling-chip').forEach(x=>x.classList.remove('selected'));chip.classList.add('selected');box.dataset.selected=chip.dataset.feeling||chip.textContent.trim();window.__pairingFeelings=window.__pairingFeelings||{};window.__pairingFeelings[id==='feel1'?1:2]=box.dataset.selected;},true);}
-  function imagePreview(input,target){const url=(input.value||'').trim();if(!target)return;if(!url){target.textContent='предпросмотр фото';return;}const img=new Image();img.alt='';img.onload=()=>{target.innerHTML='';target.appendChild(img);};img.onerror=()=>{target.textContent='не удалось загрузить изображение';};img.src=url;}
-  function images(){[['photo1','preview1'],['photo2','preview2']].forEach(([a,b])=>{const i=document.getElementById(a),t=document.getElementById(b);if(i&&t&&i.dataset.previewBound!=='1'){i.dataset.previewBound='1';i.addEventListener('input',()=>imagePreview(i,t));if(i.value)imagePreview(i,t);}});document.querySelectorAll('.upload-card').forEach(c=>{const i=c.querySelector('.image-url-field input'),t=c.querySelector('.aesthetic-image'),f=c.querySelector('input[type=file]');if(i&&t&&i.dataset.previewBound!=='1'){i.dataset.previewBound='1';i.addEventListener('input',()=>imagePreview(i,t));if(i.value)imagePreview(i,t);}if(f&&t&&f.dataset.previewBound!=='1'){f.dataset.previewBound='1';f.addEventListener('change',()=>{const file=f.files&&f.files[0];if(!file)return;const r=new FileReader();r.onload=e=>{t.innerHTML='<img src="'+e.target.result+'" alt="">';};r.readAsDataURL(file);});}});}
-  function init(){ensure('feel1');ensure('feel2');images();}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
-  new MutationObserver(init).observe(document.documentElement,{childList:true,subtree:true});
+const F=[['Blood & Velvet','страсть, опасность и притяжение'],['Midnight Neon','ночная химия и электрическое напряжение'],['Cemetery Gold','мрачная роскошь и что-то почти святое'],['Electric Blue','холодная искра, которая всё равно бьёт током'],['Rust & Smoke','старые раны, дым и упрямое тепло'],['Victorian Noir','тайны, приличия и чувства, о которых нельзя говорить'],['Acid Green','хаос, дерзость и очень плохие решения'],['Moonlight','тихая близость, которую замечают только они'],['Crimson Devotion','преданность на грани одержимости'],['Silver Distance','чувства есть, но между ними километры'],['Golden Trouble','слишком красиво, чтобы быть хорошей идеей'],['Black Lace','опасная нежность и тщательно спрятанные эмоции'],['Violet Fever','романтика, странность и лёгкая потеря рассудка'],['White Noise','много невысказанного и слишком много мыслей'],['Burnt Sugar','сладость с привкусом катастрофы'],['Cold Fire','ледяная сдержанность и внезапные вспышки'],['Velvet Knife','нежность, которая умеет ранить'],['Neon Bruise','ярко, больно и почему-то хочется ещё'],['Holy Static','почти святое чувство с совершенно неправильным напряжением'],['Wild Honey','тепло, опасность и сладкая безрассудность'],['Grave Flowers','красота, выросшая из старых травм'],['Chrome Romance','глянец, дерзость и романтика будущего'],['Dusk & Gold','закатная меланхолия и драгоценная близость'],['Blackout Kiss','момент, который лучше не вспоминать слишком подробно'],['Storm & Silk','буря снаружи, мягкость только друг для друга'],['Paper Hearts','хрупкость, которую оба делают вид, что не замечают'],['Razor Smile','флирт, сарказм и опасная игра'],['Motel Moon','ночная свобода, бегство и случайная близость'],['Ash & Honey','после пожара всё равно осталось что-то сладкое'],['Blue Velvet','медленная чувственность и кинематографическая тоска']];
+function ensure(id){const b=document.getElementById(id);if(!b)return;if(!b.querySelector('.feeling-chip'))b.innerHTML=F.map(x=>'<button type="button" class="feeling-chip" data-feeling="'+x[0]+'"><strong>'+x[0]+'</strong><small>'+x[1]+'</small></button>').join('');if(b.dataset.repair==='1')return;b.dataset.repair='1';b.addEventListener('click',function(e){const c=e.target.closest('.feeling-chip');if(!c)return;e.preventDefault();e.stopPropagation();b.querySelectorAll('.feeling-chip').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');b.dataset.selected=c.dataset.feeling;window.__pairingFeelings=window.__pairingFeelings||{};window.__pairingFeelings[id==='feel1'?1:2]=c.dataset.feeling;},true)}
+function imgPreview(i,t){const u=(i.value||'').trim();if(!t)return;if(!u){t.textContent='предпросмотр фото';return}const im=new Image();im.onload=()=>{t.replaceChildren(im)};im.onerror=()=>{t.textContent='не удалось загрузить изображение'};im.src=u}
+function bind(){ensure('feel1');ensure('feel2');[['photo1','preview1'],['photo2','preview2']].forEach(x=>{const i=document.getElementById(x[0]),t=document.getElementById(x[1]);if(i&&t&&i.dataset.repairImg!=='1'){i.dataset.repairImg='1';i.addEventListener('input',()=>imgPreview(i,t));if(i.value)imgPreview(i,t)}});document.querySelectorAll('.upload-card').forEach(c=>{const i=c.querySelector('.image-url-field input'),t=c.querySelector('.aesthetic-image'),f=c.querySelector('.file-label input[type=file]');if(i&&t&&i.dataset.repairImg!=='1'){i.dataset.repairImg='1';i.addEventListener('input',()=>imgPreview(i,t))}if(f&&t&&f.dataset.repairFile!=='1'){f.dataset.repairFile='1';f.addEventListener('change',()=>{const z=f.files&&f.files[0];if(!z)return;const r=new FileReader();r.onload=e=>t.innerHTML='<img src="'+e.target.result+'" alt="">';r.readAsDataURL(z)})}})}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();new MutationObserver(bind).observe(document.documentElement,{childList:true,subtree:true});
 })();
 </script>'''
-              text=text.replace('</body>',patch+'\n</body>')
-              p.write_text(text,encoding='utf-8')
+              s=s.replace('</body>',patch+'\n</body>');p.write_text(s,encoding='utf-8')
           PY
-      - name: Commit patch
+      - name: Commit repair
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          git add index.html music-archetypes.js
-          git diff --cached --quiet || git commit -m 'Connect expanded music archetypes to generator'
-          git push
+          git add index.html
+          git diff --cached --quiet || (git commit -m 'Connect expanded music archetypes to generator' && git push)
