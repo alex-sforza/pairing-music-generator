@@ -43,9 +43,7 @@
   };
 
   function hideLocalImageControls() {
-    document.querySelectorAll('.upload-card .file-label, .upload-card .file-name').forEach(function (el) {
-      el.style.display = 'none';
-    });
+    document.querySelectorAll('.upload-card .file-label, .upload-card .file-name').forEach(function (el) { el.style.display = 'none'; });
   }
 
   function bindImageUrls() {
@@ -132,9 +130,7 @@
   }
 
   function selectedStyles() {
-    return Array.from(document.querySelectorAll('.style-list .chip.selected')).map(function (el) {
-      return el.textContent.trim();
-    }).filter(Boolean);
+    return Array.from(document.querySelectorAll('.style-list .chip.selected')).map(function (el) { return el.textContent.trim(); }).filter(Boolean);
   }
 
   function pairNames() {
@@ -157,36 +153,39 @@
     var bandStyle = document.querySelector('.band-style');
     if (!bandStyle) return;
     var description = makeStyleDescription(selectedStyles());
-    if (description) bandStyle.textContent = description;
+    if (description && bandStyle.textContent.trim() !== description.trim()) bandStyle.textContent = description;
   }
 
   function makePairArchetypeDescription() {
     var box = document.querySelector('.archetype-box');
     if (!box) return;
     var p = box.querySelector('p');
-    if (!p) return;
+    if (!p || p.dataset.pairDescriptionApplied === '1') return;
     var names = pairNames();
     var styles = selectedStyles();
     var styleText = makeStyleDescription(styles);
     var archetype = (box.querySelector('.archetype-name') || {}).textContent || 'их общий архетип';
     var n1 = names[0], n2 = names[1];
     var templates = [
-      n1 + ' и ' + n2 + ' соединяют разные музыкальные темпераменты в один характерный дуэт. ' + (styleText ? 'Их общее звучание строится на том, что ' + styleText.charAt(0).toLowerCase() + styleText.slice(1) + ' ' : '') + 'Поэтому «' + archetype.trim() + '» здесь звучит не как маска одного из них, а как результат их постоянного притяжения и столкновения.',
-      'В музыке ' + n1 + ' и ' + n2 + ' слышно, как два разных характера постепенно учатся звучать вместе. ' + (styleText ? styleText.charAt(0).toUpperCase() + styleText.slice(1) + ' ' : '') + 'Их общий архетип — «' + archetype.trim() + '»: сочетание, в котором различия не исчезают, а становятся частью общей динамики.',
-      '«' + archetype.trim() + '» рождается из взаимодействия ' + n1 + ' и ' + n2 + '. Один импульс отвечает другому, напряжение сменяется гармонией, а противоположности превращаются в узнаваемый звук пары.'
+      n1 + ' и ' + n2 + ' соединяют разные музыкальные темпераменты в одно узнаваемое звучание. ' + (styleText ? 'В нём встречаются ' + styleText.replace(/[.]$/, '') + '. ' : '') + 'Их общий архетип «' + archetype.trim() + '» рождается из притяжения, разницы характеров и того, как они влияют друг на друга.',
+      'Музыка ' + n1 + ' и ' + n2 + ' строится на взаимодействии двух характеров: один импульс отвечает другому, напряжение сменяется гармонией, а различия становятся частью общего звучания. Так проявляется архетип «' + archetype.trim() + '».',
+      '«' + archetype.trim() + '» — это история о том, как ' + n1 + ' и ' + n2 + ' превращают собственную динамику в музыку: в ней слышны притяжение, столкновения, уступки и моменты неожиданного совпадения.'
     ];
     var index = (n1.length + n2.length + styles.length) % templates.length;
-    p.textContent = templates[index];
+    var result = templates[index];
+    if (p.textContent.trim() !== result.trim()) p.textContent = result;
+    p.dataset.pairDescriptionApplied = '1';
   }
 
   function removeDuoSentenceFromPortraits() {
     document.querySelectorAll('.character-profile p').forEach(function (p) {
+      if (p.dataset.duoRemoved === '1') return;
       var text = p.textContent || '';
       var cleaned = text
-        .replace(/\s*В\s+дуэте\s+с\s+[^.!?]*[.!?]?\s*$/i, '')
         .replace(/\s*В\s+дуэте\s+с\s+[^.!?]*(?:[.!?]|$)/gi, '')
         .trim();
       if (cleaned !== text.trim()) p.textContent = cleaned;
+      p.dataset.duoRemoved = '1';
     });
   }
 
