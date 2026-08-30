@@ -23,68 +23,38 @@ jobs:
           from pathlib import Path
           p = Path('index.html')
           s = p.read_text(encoding='utf-8')
-
-          # Make relationship feelings self-contained and clickable even if an older
-          # script version forgot to declare the feelings data.
           marker = "function makeFeelings(id){"
           feelings = """const feelings=window.PAIRING_FEELINGS||[
-          ['Blood & Velvet','опасное притяжение, роскошь и скрытая одержимость','опасное притяжение'],
-          ['Midnight Neon','тайные встречи, ночные разговоры и электричество','ночь и электричество'],
-          ['Cemetery Gold','мрачная красота, преданность и что-то почти вечное','красивая обречённость'],
-          ['Electric Blue','холодная искра, дистанция и внезапные вспышки','холодная искра'],
-          ['Rust & Smoke','старые раны, честность и тепло сквозь дым','шрамы и тепло'],
-          ['Victorian Noir','вежливость, тайны и чувства, которые никто не признаёт','непроизнесённые чувства'],
-          ['Acid Green','хаос, дерзость и химия, которую лучше не проверять','токсичная химия'],
-          ['Moonlight','тихая близость, доверие и немного магии','тихая близость'],
-          ['Crimson Devotion','одержимая верность и слишком сильные чувства','клятва, от которой не уйти'],
-          ['Silver Distance','расстояние, сдержанность и взгляды вместо слов','слишком далеко, слишком близко'],
-          ['Golden Trouble','флирт, азарт и неизбежные неприятности','красивая неприятность'],
-          ['Black Lace','соблазн, секреты и эстетика плохих решений','секреты под чёрным кружевом'],
-          ['Violet Fever','мечтательность, странность и эмоциональная лихорадка','лихорадка между нами'],
-          ['White Noise','неопределённость, недосказанность и шум в голове','слишком много несказанного'],
-          ['Burnt Sugar','сладость, которая обжигает','сладко до боли'],
-          ['Cold Fire','противоречие, где никто не хочет уступать','огонь без тепла'],
-          ['Velvet Knife','нежность с очень острым краем','нежность, которая режет'],
-          ['Neon Bruise','яркие чувства после очередной эмоциональной аварии','красивый синяк'],
-          ['Holy Static','почти религиозное восхищение, перемешанное с хаосом','святое безумие'],
-          ['Wild Honey','тёплое притяжение, которое быстро становится опасным','сладкая дикость'],
-          ['Grave Flowers','красота, выросшая из старых трагедий','цветы на руинах'],
-          ['Chrome Romance','холодный блеск, стиль и неожиданная романтика','романтика из металла'],
-          ['Dusk & Gold','мягкая тоска и редкие вспышки счастья','золото на закате'],
-          ['Blackout Kiss','импульс, после которого никто ничего не помнит','поцелуй после полуночи'],
-          ['Storm & Silk','буря снаружи и неожиданная нежность внутри','буря и шёлк'],
-          ['Rose Static','романтика, которая всё время даёт помехи','любовь с помехами'],
-          ['Ash & Honey','горечь прошлого и неожиданная сладость настоящего','мёд после пепла'],
-          ['Dangerous Gold','роскошь, азарт и ощущение, что всё вот-вот сорвётся','золотая авантюра']
+          ['Blood & Velvet','опасное притяжение, роскошь и скрытая одержимость','опасное притяжение'],['Midnight Neon','тайные встречи, ночные разговоры и электричество','ночь и электричество'],['Cemetery Gold','мрачная красота, преданность и что-то почти вечное','красивая обречённость'],['Electric Blue','холодная искра, дистанция и внезапные вспышки','холодная искра'],['Rust & Smoke','старые раны, честность и тепло сквозь дым','шрамы и тепло'],['Victorian Noir','вежливость, тайны и чувства, которые никто не признаёт','непроизнесённые чувства'],['Acid Green','хаос, дерзость и химия, которую лучше не проверять','токсичная химия'],['Moonlight','тихая близость, доверие и немного магии','тихая близость'],['Crimson Devotion','одержимая верность и слишком сильные чувства','клятва, от которой не уйти'],['Silver Distance','расстояние, сдержанность и взгляды вместо слов','слишком далеко, слишком близко'],['Golden Trouble','флирт, азарт и неизбежные неприятности','красивая неприятность'],['Black Lace','соблазн, секреты и эстетика плохих решений','секреты под чёрным кружевом'],['Violet Fever','мечтательность, странность и эмоциональная лихорадка','лихорадка между нами'],['White Noise','неопределённость, недосказанность и шум в голове','слишком много несказанного'],['Burnt Sugar','сладость, которая обжигает','сладко до боли'],['Cold Fire','противоречие, где никто не хочет уступать','огонь без тепла'],['Velvet Knife','нежность с очень острым краем','нежность, которая режет'],['Neon Bruise','яркие чувства после очередной эмоциональной аварии','красивый синяк'],['Holy Static','почти религиозное восхищение, перемешанное с хаосом','святое безумие'],['Wild Honey','тёплое притяжение, которое быстро становится опасным','сладкая дикость'],['Grave Flowers','красота, выросшая из старых трагедий','цветы на руинах'],['Chrome Romance','холодный блеск, стиль и неожиданная романтика','романтика из металла'],['Dusk & Gold','мягкая тоска и редкие вспышки счастья','золото на закате'],['Blackout Kiss','импульс, после которого никто ничего не помнит','поцелуй после полуночи'],['Storm & Silk','буря снаружи и неожиданная нежность внутри','буря и шёлк'],['Rose Static','романтика, которая всё время даёт помехи','любовь с помехами'],['Ash & Honey','горечь прошлого и неожиданная сладость настоящего','мёд после пепла'],['Dangerous Gold','роскошь, азарт и ощущение, что всё вот-вот сорвётся','золотая авантюра']
           ];
           """
           if marker in s and 'const feelings=window.PAIRING_FEELINGS||' not in s:
               s = s.replace(marker, feelings + marker, 1)
-
-          # Replace the upload card template with a URL field plus the local-file option.
           old = '''d.innerHTML=`<h3>${title}</h3><p>${desc}</p><label class="file-label">+ ДОБАВИТЬ КАРТИНКУ<input type="file" accept="image/*"></label><div class="file-name" id="file-${id}">файл не выбран</div>`;'''
           new = '''d.innerHTML=`<h3>${title}</h3><p>${desc}</p><div class="field image-url-field"><label>Ссылка на изображение</label><input class="aesthetic-url" type="url" placeholder="https://..."></div><label class="file-label">+ ДОБАВИТЬ КАРТИНКУ<input type="file" accept="image/*"></label><div class="file-name" id="file-${id}">файл не выбран</div>`;'''
-          if old in s:
-              s = s.replace(old, new, 1)
+          if old in s: s=s.replace(old,new,1)
+          s=s.replace("d.querySelector('input').onchange=e=>{","d.querySelector('.file-label input').onchange=e=>{",1)
+          needle="r.readAsDataURL(f)}});"
+          replacement="r.readAsDataURL(f)}});d.querySelector('.aesthetic-url').oninput=e=>{const u=e.target.value.trim();if(u)files[id]=u;else delete files[id]};"
+          if needle in s and "aesthetic-url').oninput" not in s: s=s.replace(needle,replacement,1)
+          css_marker='.file-label{display:flex;'
+          css='.image-url-field{margin:8px 0}.image-url-field label{font-size:8px}.image-url-field input{font-size:11px;padding:9px}.file-label{display:flex;'
+          if css_marker in s and '.image-url-field{' not in s: s=s.replace(css_marker,css,1)
 
-          # The added URL input must not steal the file-input onchange handler.
-          old2 = "d.querySelector('input').onchange=e=>{const f=e.target.files[0];if(!f)return;"
-          new2 = "d.querySelector('.file-label input').onchange=e=>{const f=e.target.files[0];if(!f)return;"
-          s = s.replace(old2, new2, 1)
-
-          # Save a pasted URL into the same files object used by the result renderer.
-          needle = "r.readAsDataURL(f)}});"
-          replacement = "r.readAsDataURL(f)}});d.querySelector('.aesthetic-url').oninput=e=>{const u=e.target.value.trim();if(u)files[id]=u;else delete files[id]};"
-          if needle in s and "aesthetic-url').oninput" not in s:
-              s = s.replace(needle, replacement, 1)
-
-          # Small visual treatment for the new URL row.
-          css_marker = '.file-label{display:flex;'
-          css = '.image-url-field{margin:8px 0}.image-url-field label{font-size:8px}.image-url-field input{font-size:11px;padding:9px}.file-label{display:flex;'
-          if css_marker in s and '.image-url-field{' not in s:
-              s = s.replace(css_marker, css, 1)
-
-          p.write_text(s, encoding='utf-8')
+          # Hard fallback: delegated click handling works even if the original
+          # generator's relationship handler is missing or broken.
+          fix_marker='<!-- pairing-feeling-click-fix -->'
+          if fix_marker not in s:
+              fix=r'''<!-- pairing-feeling-click-fix -->
+<script>
+(function(){
+const F=[['Blood & Velvet','страсть, опасность и притяжение'],['Midnight Neon','ночная химия и электрическое напряжение'],['Cemetery Gold','мрачная роскошь и что-то почти святое'],['Electric Blue','холодная искра, которая всё равно бьёт током'],['Rust & Smoke','старые раны, дым и упрямое тепло'],['Victorian Noir','тайны, приличия и чувства, о которых нельзя говорить'],['Acid Green','хаос, дерзость и очень плохие решения'],['Moonlight','тихая близость, которую замечают только они'],['Crimson Devotion','преданность на грани одержимости'],['Silver Distance','чувства есть, но между ними километры'],['Golden Trouble','слишком красиво, чтобы быть хорошей идеей'],['Black Lace','опасная нежность и тщательно спрятанные эмоции'],['Violet Fever','романтика, странность и лёгкая потеря рассудка'],['White Noise','много невысказанного и слишком много мыслей'],['Burnt Sugar','сладость с привкусом катастрофы'],['Cold Fire','ледяная сдержанность и внезапные вспышки'],['Velvet Knife','нежность, которая умеет ранить'],['Neon Bruise','ярко, больно и почему-то хочется ещё'],['Holy Static','почти святое чувство с совершенно неправильным напряжением'],['Wild Honey','тепло, опасность и сладкая безрассудность'],['Grave Flowers','красота, выросшая из старых травм'],['Chrome Romance','глянец, дерзость и романтика будущего'],['Dusk & Gold','закатная меланхолия и драгоценная близость'],['Blackout Kiss','момент, который лучше не вспоминать слишком подробно'],['Storm & Silk','буря снаружи, мягкость только друг для друга'],['Paper Hearts','хрупкость, которую оба делают вид, что не замечают'],['Razor Smile','флирт, сарказм и опасная игра'],['Motel Moon','ночная свобода, бегство и случайная близость'],['Ash & Honey','после пожара всё равно осталось что-то сладкое'],['Blue Velvet','медленная чувственность и кинематографическая тоска']];
+function init(){['feel1','feel2'].forEach(id=>{const b=document.getElementById(id);if(!b)return;if(!b.querySelector('.feeling-chip'))b.innerHTML=F.map(x=>'<button type="button" class="feeling-chip" data-feeling="'+x[0]+'"><strong>'+x[0]+'</strong><small>'+x[1]+'</small></button>').join('');if(b.dataset.clickFix==='1')return;b.dataset.clickFix='1';b.addEventListener('click',e=>{const c=e.target.closest('.feeling-chip');if(!c)return;e.preventDefault();e.stopPropagation();b.querySelectorAll('.feeling-chip').forEach(x=>x.classList.remove('selected'));c.classList.add('selected');b.dataset.selected=c.dataset.feeling;window.__pairingFeelings=window.__pairingFeelings||{};window.__pairingFeelings[id==='feel1'?1:2]=c.dataset.feeling;},true);});}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();new MutationObserver(init).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>'''
+              s=s.replace('</body>',fix+'\n</body>')
+          p.write_text(s,encoding='utf-8')
           PY
 
       - name: Commit patch
