@@ -1,0 +1,150 @@
+name: Repair Pairing UI
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Patch UI fallback
+        shell: python
+        run: |
+          from pathlib import Path
+          p = Path('index.html')
+          text = p.read_text(encoding='utf-8')
+          marker = '<!-- pairing-ui-repair-v2 -->'
+          if marker not in text:
+              patch = r'''<!-- pairing-ui-repair-v2 -->
+<script>
+(function(){
+  const RELATION_FEELINGS = [
+    ['Blood & Velvet','страсть, опасность и притяжение'],
+    ['Midnight Neon','ночная химия и электрическое напряжение'],
+    ['Cemetery Gold','мрачная роскошь и что-то почти святое'],
+    ['Electric Blue','холодная искра, которая всё равно бьёт током'],
+    ['Rust & Smoke','старые раны, дым и упрямое тепло'],
+    ['Victorian Noir','тайны, приличия и чувства, о которых нельзя говорить'],
+    ['Acid Green','хаос, дерзость и очень плохие решения'],
+    ['Moonlight','тихая близость, которую замечают только они'],
+    ['Crimson Devotion','преданность на грани одержимости'],
+    ['Silver Distance','чувства есть, но между ними километры'],
+    ['Golden Trouble','слишком красиво, чтобы быть хорошей идеей'],
+    ['Black Lace','опасная нежность и тщательно спрятанные эмоции'],
+    ['Violet Fever','романтика, странность и лёгкая потеря рассудка'],
+    ['White Noise','много невысказанного и слишком много мыслей'],
+    ['Burnt Sugar','сладость с привкусом катастрофы'],
+    ['Cold Fire','ледяная сдержанность и внезапные вспышки'],
+    ['Velvet Knife','нежность, которая умеет ранить'],
+    ['Neon Bruise','ярко, больно и почему-то хочется ещё'],
+    ['Holy Static','почти святое чувство с совершенно неправильным напряжением'],
+    ['Wild Honey','тепло, опасность и сладкая безрассудность'],
+    ['Grave Flowers','красота, выросшая из старых травм'],
+    ['Chrome Romance','глянец, дерзость и романтика будущего'],
+    ['Dusk & Gold','закатная меланхолия и драгоценная близость'],
+    ['Blackout Kiss','момент, который лучше не вспоминать слишком подробно'],
+    ['Storm & Silk','буря снаружи, мягкость только друг для друга'],
+    ['Paper Hearts','хрупкость, которую оба делают вид, что не замечают'],
+    ['Razor Smile','флирт, сарказм и опасная игра'],
+    ['Motel Moon','ночная свобода, бегство и случайная близость'],
+    ['Ash & Honey','после пожара всё равно осталось что-то сладкое'],
+    ['Blue Velvet','медленная чувственность и кинематографическая тоска']
+  ];
+
+  function renderFeelings(id){
+    const box=document.getElementById(id);
+    if(!box) return;
+    if(box.querySelector('.feeling-chip')) return;
+    box.innerHTML=RELATION_FEELINGS.map(([name,desc])=>
+      '<button type="button" class="feeling-chip" data-feeling="'+name.replace(/"/g,'&quot;')+'"><strong>'+name+'</strong><small>'+desc+'</small></button>'
+    ).join('');
+  }
+
+  function bindFeelings(id, side){
+    const box=document.getElementById(id);
+    if(!box || box.dataset.repairBound==='1') return;
+    box.dataset.repairBound='1';
+    box.addEventListener('click',function(e){
+      const chip=e.target.closest('.feeling-chip');
+      if(!chip || !box.contains(chip)) return;
+      e.preventDefault();
+      e.stopPropagation();
+      box.querySelectorAll('.feeling-chip').forEach(x=>x.classList.remove('selected'));
+      chip.classList.add('selected');
+      box.dataset.selected=chip.dataset.feeling || chip.querySelector('strong')?.textContent || '';
+      window.__pairingFeelings = window.__pairingFeelings || {};
+      window.__pairingFeelings[side]=box.dataset.selected;
+      box.dispatchEvent(new CustomEvent('pairing-feeling-change',{bubbles:true,detail:{side,value:box.dataset.selected}}));
+    },true);
+  }
+
+  function previewUrl(input, target){
+    const url=(input.value||'').trim();
+    if(!target) return;
+    if(!url){ target.innerHTML='предпросмотр фото'; return; }
+    target.innerHTML='';
+    const img=document.createElement('img');
+    img.alt='';
+    img.onload=function(){target.replaceChildren(img);};
+    img.onerror=function(){target.textContent='не удалось загрузить изображение';};
+    img.src=url;
+  }
+
+  function bindImages(){
+    [['photo1','preview1'],['photo2','preview2']].forEach(([inputId,targetId])=>{
+      const input=document.getElementById(inputId), target=document.getElementById(targetId);
+      if(!input || !target || input.dataset.repairBound==='1') return;
+      input.dataset.repairBound='1';
+      input.addEventListener('input',()=>previewUrl(input,target));
+      if(input.value) previewUrl(input,target);
+    });
+
+    document.querySelectorAll('.upload-card').forEach(card=>{
+      const url=card.querySelector('.image-url-field input');
+      const image=card.querySelector('.aesthetic-image');
+      const file=card.querySelector('.file-label input[type=file]');
+      if(url && image && url.dataset.repairBound!=='1'){
+        url.dataset.repairBound='1';
+        url.addEventListener('input',()=>previewUrl(url,image));
+        if(url.value) previewUrl(url,image);
+      }
+      if(file && image && file.dataset.repairBound!=='1'){
+        file.dataset.repairBound='1';
+        file.addEventListener('change',()=>{
+          const f=file.files && file.files[0];
+          if(!f) return;
+          const reader=new FileReader();
+          reader.onload=e=>{image.innerHTML='<img src="'+e.target.result+'" alt="">';};
+          reader.readAsDataURL(f);
+        });
+      }
+    });
+  }
+
+  function init(){
+    renderFeelings('feel1'); renderFeelings('feel2');
+    bindFeelings('feel1',1); bindFeelings('feel2',2);
+    bindImages();
+  }
+
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init);
+  else init();
+  new MutationObserver(init).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>'''
+              text=text.replace('</body>', patch+'\n</body>')
+              p.write_text(text,encoding='utf-8')
+      - name: Commit repair
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet || git commit -m 'fix: make relationship selectors and image previews work'
+          git push
