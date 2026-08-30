@@ -1,0 +1,54 @@
+name: Repair generator syntax
+
+on:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+
+jobs:
+  repair:
+    if: "!contains(github.event.head_commit.message, '[syntax-repair]')"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Repair duplicate feelings declaration
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import re
+
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+
+          # The generator accidentally contains two top-level `const feelings`
+          # declarations. That is a JavaScript SyntaxError, so the browser stops
+          # executing the whole script: style buttons, relationship buttons and
+          # image handlers then all appear broken.
+          first = 'const feelings=['
+          if first in s and 'const baseFeelings=[' not in s:
+              s = s.replace(first, 'const baseFeelings=[', 1)
+
+          pattern = r"const feelings=window\.PAIRING_FEELINGS\|\|\[.*?\];\nfunction makeFeelings\(id\)"
+          replacement = "const feelings=window.PAIRING_FEELINGS||baseFeelings;\nfunction makeFeelings(id)"
+          s, count = re.subn(pattern, replacement, s, count=1, flags=re.S)
+
+          # Ensure aesthetic URL inputs use the file input specifically and have
+          # a stable handler after the URL field was added.
+          s = s.replace("d.querySelector('input').onchange=e=>{", "d.querySelector('.file-label input').onchange=e=>{", 1)
+
+          p.write_text(s, encoding='utf-8')
+          print('duplicate feelings blocks removed:', count)
+          PY
+
+      - name: Commit syntax repair
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add index.html
+          git diff --cached --quiet || (git commit -m "fix: repair generator syntax [syntax-repair]" && git push origin main)
