@@ -1,221 +1,87 @@
-// Pairing Music Generator — stable UI layer
-(function () {
-  'use strict';
+/* Pairing Music Generator — single stable UI enhancement layer. */
+(function(){
+'use strict';
 
-  const STYLE_TRAITS = {
-    'Glam Rock': 'театральный рок с блеском, дерзостью и любовью к эффектным появлениям',
-    'Glam Metal': 'яркий и громкий рок с гламурной театральностью, большими припевами и культом сцены',
-    'Gothic Rock': 'мрачный романтический рок с драматическими гитарами и сумрачной атмосферой',
-    'Gothic Metal': 'тяжёлая готическая музыка с драмой, мраком и красивой меланхолией',
-    'Dream Pop': 'воздушная мечтательная музыка, похожая на воспоминание или сон',
-    'Shoegaze': 'туманное гитарное звучание, где мелодия растворяется в стене мягкого шума',
-    'Punk Rock': 'резкий и свободолюбивый панк с нервной энергией и презрением к правилам',
-    'Industrial Rock': 'механический рок с металлическим шумом, жёстким ритмом и холодной эстетикой',
-    'Darkwave': 'холодная сумрачная музыка с синтезаторами, меланхолией и ночной атмосферой',
-    'Hard Rock': 'мощный прямолинейный рок с тяжёлыми риффами, драйвом и напором',
-    'Classic Rock': 'классический рок с живыми гитарами, большими припевами и ощущением вечной сцены',
-    'Alternative Rock': 'непредсказуемый альтернативный рок, который любит ломать привычные формы',
-    'Experimental Rock': 'экспериментальный рок, превращающий странные идеи и неожиданные звуки в музыку',
-    'Post-Rock': 'созерцательный гитарный рок, который постепенно наращивает напряжение до большого эмоционального финала',
-    'Indie Rock': 'свободный независимый рок с личным почерком, мелодичностью и лёгкой небрежностью',
-    'Metal': 'тяжёлая музыка с массивными риффами, напором и ощущением почти физической силы',
-    'Progressive Metal': 'сложный и масштабный метал с длинными композициями, неожиданными поворотами и технической виртуозностью',
-    'Symphonic Metal': 'тяжёлый рок, соединённый с оркестровой пышностью, драмой и кинематографическим размахом',
-    'Metalcore': 'агрессивная смесь тяжёлых риффов, резких переходов и эмоционального напряжения',
-    'Post-Hardcore': 'нервная тяжёлая музыка, в которой ярость постоянно сталкивается с уязвимостью',
-    'Emo': 'эмоциональный рок о внутренних конфликтах, слишком сильных чувствах и честной уязвимости',
-    'Synthpop': 'неоновая поп-музыка с синтезаторами, цепкими мелодиями и блеском ночного города',
-    'Synthwave': 'ретро-футуристическая электроника с неоном, ночными трассами и атмосферой восьмидесятых',
-    'Dark Pop': 'мрачный поп с красивыми мелодиями, глянцем и тревожной романтической атмосферой',
-    'Electronic': 'электронная музыка, где ритм, текстуры и синтетические звуки становятся главным языком',
-    'Witch House': 'тёмная гипнотическая электроника с замедленными ритмами, мистикой и тревожным ощущением сна',
-    'Dark Folk': 'мрачный фолк с древними интонациями, природной образностью и ощущением старой легенды',
-    'Folk': 'живая фолк-музыка с человеческим голосом, историями и ощущением дороги',
-    'Neofolk': 'строгий атмосферный фолк с историческими мотивами, ритуальностью и холодной красотой',
-    'Jazz': 'свободный джаз с импровизацией, сложными ритмами и любовью к неожиданным решениям',
-    'Dark Jazz': 'дымный ночной джаз с медленным напряжением, тенями и ощущением пустого бара после полуночи',
-    'Blues Rock': 'гитарный рок с блюзовой хрипотцой, чувством дороги и эмоциональной прямотой',
-    'Soul': 'тёплая эмоциональная музыка с выразительным вокалом, грувом и человеческой близостью',
-    'Funk': 'ритмичный и дерзкий фанк с упругим грувом, танцевальностью и заразительной самоуверенностью',
-    'Ambient': 'пространственная музыка из атмосфер, пауз и медленно меняющихся звуковых пейзажей',
-    'Trip-Hop': 'медленная тёмная смесь хип-хоп ритмов, электроники, баса и кинематографической меланхолии',
-    'Dark Cabaret': 'театральная тёмная музыка с кабаретной иронией, гротеском и ощущением запретного представления'
-  };
+const STYLE_TRAITS={
+'Glam Rock':'театральным роком с блеском, дерзостью и любовью к эффектным появлениям','Glam Metal':'ярким и громким роком с гламурной театральностью и большими припевами','Gothic Rock':'мрачным романтическим роком с драматическими гитарами и сумрачной атмосферой','Gothic Metal':'тяжёлой готической музыкой с драмой, мраком и красивой меланхолией','Dream Pop':'воздушной мечтательной музыкой, похожей на воспоминание или сон','Shoegaze':'туманным гитарным звучанием, где мелодия растворяется в стене мягкого шума','Punk Rock':'резким и свободолюбивым панком с нервной энергией и презрением к правилам','Industrial Rock':'механическим роком с металлическим шумом, жёстким ритмом и холодной эстетикой','Darkwave':'холодной сумрачной музыкой с синтезаторами, меланхолией и ночной атмосферой','Hard Rock':'мощным прямолинейным роком с тяжёлыми риффами, драйвом и напором','Classic Rock':'классическим роком с живыми гитарами, большими припевами и ощущением вечной сцены','Alternative Rock':'непредсказуемым альтернативным роком, который любит ломать привычные формы','Experimental Rock':'экспериментальным роком, превращающим странные идеи и неожиданные звуки в музыку','Post-Rock':'созерцательным гитарным роком, который постепенно наращивает напряжение до эмоционального финала','Indie Rock':'свободным независимым роком с личным почерком, мелодичностью и лёгкой небрежностью','Metal':'тяжёлой музыкой с массивными риффами, напором и ощущением почти физической силы','Progressive Metal':'сложным и масштабным металом с длинными композициями и неожиданными поворотами','Symphonic Metal':'тяжёлой музыкой с оркестровой пышностью, драмой и кинематографическим размахом','Metalcore':'агрессивной смесью тяжёлых риффов, резких переходов и эмоционального напряжения','Post-Hardcore':'нервной тяжёлой музыкой, где ярость постоянно сталкивается с уязвимостью','Emo':'эмоциональным роком о внутренних конфликтах, сильных чувствах и честной уязвимости','Synthpop':'неоновой поп-музыкой с синтезаторами, цепкими мелодиями и блеском ночного города','Synthwave':'ретро-футуристической электроникой с неоном, ночными трассами и атмосферой восьмидесятых','Dark Pop':'мрачным попом с красивыми мелодиями, глянцем и тревожной романтической атмосферой','Electronic':'электронной музыкой, где ритм, текстуры и синтетические звуки становятся главным языком','Witch House':'тёмной гипнотической электроникой с замедленными ритмами, мистикой и ощущением сна','Dark Folk':'мрачным фолком с древними интонациями, природной образностью и ощущением старой легенды','Folk':'живой фолк-музыкой с человеческим голосом, историями и ощущением дороги','Neofolk':'строгим атмосферным фолком с историческими мотивами, ритуальностью и холодной красотой','Jazz':'свободным джазом с импровизацией, сложными ритмами и любовью к неожиданным решениям','Dark Jazz':'дымным ночным джазом с медленным напряжением и ощущением пустого бара после полуночи','Blues Rock':'гитарным роком с блюзовой хрипотцой, чувством дороги и эмоциональной прямотой','Soul':'тёплой эмоциональной музыкой с выразительным вокалом, грувом и человеческой близостью','Funk':'ритмичным и дерзким фанком с упругим грувом, танцевальностью и самоуверенностью','Ambient':'пространственной музыкой из атмосфер, пауз и медленно меняющихся звуковых пейзажей','Trip-Hop':'медленной тёмной смесью ритмов, электроники, баса и кинематографической меланхолии','Dark Cabaret':'театральной тёмной музыкой с кабаретной иронией, гротеском и ощущением запретного представления'};
 
-  function hideLocalImageControls() {
-    document.querySelectorAll('.upload-card .file-label, .upload-card .file-name').forEach(function (el) { el.style.display = 'none'; });
-  }
+const TRANSITIONS=['В музыке этот характер особенно хорошо раскрывается через','Неудивительно, что музыкальный выбор здесь тяготеет к','Такой темперамент особенно точно звучит в','Если перевести этот характер на язык музыки, получится','Ему особенно близко звучание, в котором есть','Этот внутренний темперамент лучше всего раскрывается в','Музыкальная территория этого характера — это','Всё это легко узнаётся и в музыкальных предпочтениях — особенно в','Именно поэтому его особенно цепляет музыка, в которой есть','Такой характер удивительно точно находит отражение в','В музыке этот человек явно ищет','Его музыкальный вкус особенно тянется к','Лучше всего эту сторону характера передаёт','Здесь особенно уместно звучание, построенное на','В музыкальном мире ему комфортнее всего там, где есть'];
+const PORTRAITS=[
+ n=>`${n} относится к музыке как к способу слегка усложнить жизнь — желательно красиво, громко и с хорошим припевом.`,
+ n=>`У ${n} редкий талант: даже обычный плейлист постепенно превращается в концептуальный альбом о личной драме.`,
+ n=>`${n} явно не верит в фоновую музыку. Если уж звучит песня, она должна иметь характер, настроение и хотя бы одну причину переслушать её ночью.`,
+ n=>`Музыкальный вкус ${n} устроен по принципу «слишком просто — переделать». Поэтому случайный трек редко переживает встречу с этим человеком в первоначальном виде.`,
+ n=>`${n} выбирает музыку так, будто кастингует актёров для собственной жизни: одни проходят сразу, другие получают роль после очень долгого прослушивания.`,
+ n=>`Если ${n} говорит, что любит «что-нибудь спокойное», лучше уточнить, что именно считается спокойным. Здесь определение этого слова довольно гибкое.`,
+ n=>`${n} способен услышать характер человека раньше, чем тот успеет представиться — иногда по одной басовой линии.`,
+ n=>`У ${n} музыкальная интуиция работает быстрее логики. Сначала появляется ощущение «вот оно», а объяснение почему приходит значительно позже.`,
+ n=>`${n} предпочитает музыку, которая оставляет след. Желательно такой, чтобы после неё несколько минут было невозможно нормально разговаривать.`,
+ n=>`Плейлист ${n} выглядит так, будто его собирали три разных человека, а потом решили не выяснять, кто из них прав.`,
+ n=>`${n} не просто слушает песни — он запоминает, где именно в них начинается нужное настроение.`,
+ n=>`У ${n} подозрительно серьёзное отношение к вступлениям. Если первые двадцать секунд не убедили, второй шанс получает далеко не каждый трек.`,
+ n=>`${n} любит музыку с собственной биографией: чем больше в ней тени, странностей и неожиданных поворотов, тем интереснее.`,
+ n=>`Для ${n} хороший трек — это не украшение дня, а маленькое событие. Иногда совершенно неуместное, зато очень своевременное.`,
+ n=>`${n} способен превратить случайную песню в личный символ, а потом удивляться, почему окружающие не понимают масштаба произошедшего.`,
+ n=>`Музыкальный вкус ${n} балансирует между эстетикой и хаосом. К счастью, хаос обычно одет очень хорошо.`,
+ n=>`${n} выбирает музыку сердцем, но оставляет за собой право потом три часа объяснять, почему это был исключительно рациональный выбор.`,
+ n=>`У ${n} нет привычки слушать «просто что-нибудь». Даже случайный трек быстро получает роль, сюжет и эмоциональную функцию.`,
+ n=>`${n} любит музыку, в которой есть пространство для собственной интерпретации. Чем меньше всё объяснено заранее, тем лучше.`,
+ n=>`Если песня заставила ${n} остановиться посреди дела, можно считать, что она прошла самый строгий кастинг.`,
+ n=>`${n} воспринимает жанры скорее как территории, между которыми можно свободно пересекать границы.`,
+ n=>`У ${n} удивительно точное чувство атмосферы: иногда достаточно двух нот, чтобы день внезапно получил совершенно другой саундтрек.`,
+ n=>`${n} любит, когда музыка немного спорит с ним. Полное согласие быстро становится скучным.`,
+ n=>`Музыкальная библиотека ${n} — это архив состояний, которые было бы слишком сложно объяснить обычными словами.`,
+ n=>`${n} способен искренне защищать песню, которую остальные считают странной. И, что хуже всего, иногда оказывается прав.`,
+ n=>`У ${n} отличный слух на эффектные моменты: нужный припев, правильная пауза и тот самый звук, после которого хочется смотреть в окно.`,
+ n=>`${n} выбирает музыку с таким вниманием, будто собирает костюм для выхода на сцену. Несколько деталей обязательно должны совпасть.`,
+ n=>`Для ${n} музыка должна либо будить, либо усыплять, либо заставлять переосмыслить последние пять лет. Промежуточные варианты приветствуются.`,
+ n=>`${n} легко узнаёт себя в песнях, которые другие люди сочли бы слишком странными, слишком громкими или слишком печальными.`,
+ n=>`Музыкальный вкус ${n} отличается одним неудобным свойством: после него обычные плейлисты начинают казаться подозрительно скучными.`];
 
-  function bindImageUrls() {
-    document.querySelectorAll('.upload-card .image-url-field input').forEach(function (input) {
-      if (input.dataset.uiUrlBound === '1') return;
-      input.dataset.uiUrlBound = '1';
-      input.addEventListener('input', function () {
-        var card = input.closest('.upload-card');
-        var preview = card && card.querySelector('.aesthetic-image');
-        if (!preview) return;
-        var url = input.value.trim();
-        if (!url) { preview.textContent = 'вставьте ссылку на изображение'; return; }
-        var img = new Image();
-        img.onload = function () { preview.innerHTML = ''; preview.appendChild(img); };
-        img.onerror = function () { preview.textContent = 'не удалось загрузить изображение'; };
-        img.src = url;
-      });
-    });
-  }
+const REVIEWS=[
+ ['★★★★★ · THE MIDNIGHT REVIEW',b=>`«${b} звучат так, будто кто-то собрал две несовместимые идеи, закрыл дверь студии и разрешил им разобраться между собой.»`],
+ ['★★★★☆ · NOISE & VELVET',b=>`«У ${b} есть редкое качество: музыка кажется продуманной, пока внезапно не делает что-нибудь совершенно безрассудное.»`],
+ ['★★★★★ · LOCAL SOUND',b=>`«Это тот случай, когда химия между участниками слышна даже в паузах. Иногда особенно в паузах.»`],
+ ['★★★★☆ · THE UNDERGROUND PAPER',b=>`«Группа звучит увереннее, чем должна звучать группа, которая ещё только знакомится с собственной мифологией. И это комплимент.»`],
+ ['★★★★★ · NIGHT RADIO',b=>`«Их дебют хочется слушать ночью: желательно громко, немного незаконно и без попытки объяснить соседям происходящее.»`],
+ ['★★★★☆ · BLACK VINYL',b=>`«Здесь достаточно мелодии, чтобы зацепить, и достаточно странностей, чтобы не отпустить.»`],
+ ['★★★★★ · CITY AFTER DARK',b=>`«Самое интересное в ${b} — ощущение, что они ещё не выбрали, чем именно хотят стать. Пока они выбирают, получается отличная музыка.»`],
+ ['★★★★☆ · THE HOLLOW REVIEW',b=>`«Это не идеальная группа. К счастью. В их несовершенстве гораздо больше характера, чем в половине безупречных дебютов сезона.»`],
+ ['★★★★★ · SMALL TOWN NOISE',b=>`«${b} звучат так, будто у каждого участника есть своя версия происходящего, и все эти версии почему-то одновременно работают.»`],
+ ['★★★★☆ · VELVET TAPE',b=>`«Некоторые группы пытаются впечатлить. Эти двое просто оставляют после себя ощущение, что произошло что-то важное.»`],
+ ['★★★★★ · NIGHT SHIFT',b=>`«Главная проблема ${b}: после одного прослушивания трудно решить, что хочется больше — включить ещё раз или узнать, что они будут делать дальше.»`],
+ ['★★★★☆ · EASTERN UNDERGROUND',b=>`«У них есть тот редкий баланс, когда серьёзная музыка не боится быть немного смешной, а смешная — неожиданно серьёзной.»`],
+ ['★★★★★ · AFTERHOURS',b=>`«Эта группа явно не была создана ради спокойной жизни. Слушателю остаётся только присоединиться.»`],
+ ['★★★★☆ · RADIO NOIR',b=>`«Музыка здесь держится не на единстве вкусов, а на красивом несогласии. Пожалуй, это и есть её главный козырь.»`],
+ ['★★★★★ · THE LOCAL CRITIC',b=>`«Редкий дебют, после которого хочется обсуждать не только песни, но и то, каким образом эти люди вообще додумались записать их вместе.»`],
+ ['★★★★☆ · MIDNIGHT PRESS',b=>`«Если им удастся сохранить это напряжение, второй альбом может оказаться опасно хорошим.»`],
+ ['★★★★★ · STATIC MAGAZINE',b=>`«У ${b} слишком много характера для случайного проекта и слишком мало осторожности для безопасного успеха. Отличное сочетание.»`],
+ ['★★★★☆ · THE RECORD ROOM',b=>`«Их музыка не просит внимания. Она ведёт себя так, будто уже знает, что вы всё равно дослушаете.»`],
+ ['★★★★★ · NOCTURNE WEEKLY',b=>`«В этом дебюте есть ощущение ночной поездки, после которой никто не признаётся, куда именно они ехали.»`],
+ ['★★★★☆ · LOUD & LOVELY',b=>`«Красиво, странно, местами совершенно непрактично — и именно поэтому работает.»`]];
 
-  function bindPhotoUrls() {
-    [['photo1', 'preview1'], ['photo2', 'preview2']].forEach(function (pair) {
-      var input = document.getElementById(pair[0]);
-      var preview = document.getElementById(pair[1]);
-      if (!input || !preview || input.dataset.uiPhotoBound === '1') return;
-      input.dataset.uiPhotoBound = '1';
-      input.addEventListener('input', function () {
-        var url = input.value.trim();
-        if (!url) { preview.textContent = 'предпросмотр фото'; return; }
-        var img = new Image();
-        img.onload = function () { preview.innerHTML = ''; preview.appendChild(img); };
-        img.onerror = function () { preview.textContent = 'не удалось загрузить фото'; };
-        img.src = url;
-      });
-    });
-  }
+const pick=a=>a[Math.floor(Math.random()*a.length)];
+const names=()=>[((document.getElementById('name1')||{}).value||'Первый персонаж').trim()||'Первый персонаж',((document.getElementById('name2')||{}).value||'Второй персонаж').trim()||'Второй персонаж'];
+const styles=id=>Array.from(document.querySelectorAll('#'+id+' .chip.selected')).map(x=>x.textContent.trim()).filter(Boolean);
+const traitText=s=>[...new Set(s)].map(x=>STYLE_TRAITS[x]).filter(Boolean);
 
-  function removeRedundantStyleLine() {
-    document.querySelectorAll('.pair-names').forEach(function (el) {
-      var next = el.nextElementSibling;
-      if (!next) return;
-      var text = (next.textContent || '').trim();
-      if (/·/.test(text) && /\//.test(text) && text.length < 500) next.remove();
-    });
-  }
+function hideFileControls(){document.querySelectorAll('.upload-card .file-label,.upload-card .file-name').forEach(x=>x.style.display='none');}
+function bindImageUrls(){document.querySelectorAll('.upload-card .image-url-field input').forEach(input=>{if(input.dataset.stableBound==='1')return;input.dataset.stableBound='1';input.addEventListener('input',()=>{const card=input.closest('.upload-card'),preview=card&&card.querySelector('.aesthetic-image'),url=input.value.trim();if(!preview)return;if(!url){preview.textContent='вставьте ссылку на изображение';return}const img=new Image();img.onload=()=>preview.replaceChildren(img);img.onerror=()=>preview.textContent='не удалось загрузить изображение';img.src=url;});});}
+function bindRelationshipButtons(){document.querySelectorAll('.feeling-chip').forEach(button=>{if(button.dataset.stableBound==='1')return;button.dataset.stableBound='1';button.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();const list=button.closest('.feeling-list');if(!list)return;list.querySelectorAll('.feeling-chip.selected').forEach(x=>x.classList.remove('selected'));button.classList.add('selected');list.dataset.value=button.dataset.key||button.dataset.feeling||'';});});}
+function bindPhotoUrls(){[['photo1','preview1'],['photo2','preview2']].forEach(([id,pid])=>{const input=document.getElementById(id),preview=document.getElementById(pid);if(!input||!preview||input.dataset.stableBound==='1')return;input.dataset.stableBound='1';input.addEventListener('input',()=>{const u=input.value.trim();if(!u){preview.textContent='предпросмотр фото';return}const img=new Image();img.onload=()=>preview.replaceChildren(img);img.onerror=()=>preview.textContent='не удалось загрузить фото';img.src=u;});});}
 
-  function removeRedundantFacts() {
-    document.querySelectorAll('.fact').forEach(function (el) {
-      var text = (el.textContent || '').toLowerCase();
-      if (text.includes('музыкальный архетип') || text.includes('исходные группы')) el.remove();
-    });
-  }
+function updateBandStyle(){const el=document.querySelector('.band-style');if(!el)return;const traits=traitText([...styles('styles1'),...styles('styles2')]);if(!traits.length)return;el.textContent=traits.length===1?traits[0]+'.':traits.length===2?traits[0]+', соединённые с '+traits[1]+'.':traits[0]+'; к ним добавляются '+traits[1]+' и '+traits[2]+'.';}
+function makePortrait(name,list,slot){let i=Math.floor(Math.random()*PORTRAITS.length);if(PORTRAITS.length>1&&i===makePortrait.last[slot])i=(i+1)%PORTRAITS.length;makePortrait.last[slot]=i;const traits=traitText(list),trait=traits.length?pick(traits):'выразительным звучанием, которое не любит оставаться незамеченным';const endings=[`${pick(TRANSITIONS)} ${trait}.`,`В этом вкусе особенно слышна любовь к ${trait}.`,`Музыка для него — пространство, где особенно естественно чувствуется ${trait}.`,`Лучше всего его вкус раскрывается там, где есть ${trait}.`,`В выборе музыки его особенно выдаёт тяга к ${trait}.`];return PORTRAITS[i](name)+' '+pick(endings);}
+makePortrait.last={1:-1,2:-1};
 
-  function addFourthReview() {
-    var grid = document.querySelector('.review-grid');
-    if (!grid || grid.querySelector('[data-fourth-review="1"]')) return;
-    var reviews = grid.querySelectorAll('.review');
-    if (reviews.length < 3) return;
-    var fourth = document.createElement('article');
-    fourth.className = 'review';
-    fourth.dataset.fourthReview = '1';
-    fourth.innerHTML = '<h4>★★★★☆ · NIGHT &amp; NOISE</h4><p>«Они не столько создают музыку вместе, сколько превращают собственное напряжение в неё. Именно поэтому за их песнями хочется следить внимательнее, чем за любым пресс-релизом.»</p>';
-    grid.appendChild(fourth);
-  }
+function makePairArchetype(){const box=document.querySelector('.archetype-box'),p=box&&box.querySelector('p'),title=box&&box.querySelector('.archetype-name');if(!box||!p||!title)return;const[a,b]=names(),arch=title.textContent.trim(),signature=a+'|'+b+'|'+arch;if(p.dataset.stableSignature===signature)return;const variants=[`Рядом друг с другом ${a} и ${b} постоянно меняются ролями: тот, кто задаёт импульс, через мгновение уже отвечает на него. «${arch}» проявляется в самой их игре — в умении одновременно тянуть друг друга вперёд и мешать друг другу остановиться.`,`У ${a} и ${b} есть особенность: рядом друг с другом они позволяют себе больше, чем по отдельности. «${arch}» возникает из этого эффекта — один становится поводом для смелости другого, а затем получает ответ.`,`В «${arch}» у ${a} и ${b} нет окончательного победителя. Их динамика держится на постоянной смене инициативы: вызов, ответ, уступка, новый вызов — и ни одному из них не хочется выходить из этой игры.`,`Самое интересное в «${arch}» — то, как ${a} и ${b} умеют оставлять между собой пространство для напряжения. Они не спешат всё объяснять, зато прекрасно умеют заставить другого сделать следующий шаг.`,`«${arch}» у ${a} и ${b} ощущается как отдельный сюжет внутри группы: они могут быть союзниками, соперниками и соучастниками в одном эпизоде. Главное — рядом друг с другом ни один из них не остаётся прежним.`,`У этой пары «${arch}» проявляется в деталях: кто первым нарушает молчание, кто провоцирует, кто отступает и кто всё-таки возвращается. Именно из этих маленьких движений складывается их узнаваемая химия.`];p.textContent=pick(variants);p.dataset.stableSignature=signature;}
 
-  function bindRelationshipButtons() {
-    if (document.documentElement.dataset.feelingFixBound === '1') return;
-    document.documentElement.dataset.feelingFixBound = '1';
-    document.addEventListener('click', function (event) {
-      var button = event.target.closest('.feeling-chip');
-      if (!button) return;
-      var feelingList = button.closest('.feeling-list');
-      if (!feelingList) return;
-      event.preventDefault();
-      event.stopImmediatePropagation();
-      feelingList.querySelectorAll('.feeling-chip.selected').forEach(function (el) {
-        el.classList.remove('selected');
-        el.setAttribute('aria-pressed', 'false');
-      });
-      button.classList.add('selected');
-      button.setAttribute('aria-pressed', 'true');
-      feelingList.dataset.value = button.dataset.key || '';
-    }, true);
-  }
+function renderReviews(){const grid=document.querySelector('.review-grid'),band=document.querySelector('.band-name')?.textContent.trim();if(!grid||!band)return;const chosen=REVIEWS.slice().sort(()=>Math.random()-.5).slice(0,4);grid.innerHTML=chosen.map(r=>`<article class="review"><h4>${r[0]}</h4><p>${r[1](band)}</p></article>`).join('');}
+function cleanPortraits(){document.querySelectorAll('.character-profile p').forEach(p=>{p.textContent=(p.textContent||'').replace(/\s*В\s+группе\s+этому\s+человеку\s+естественно\s+быть[^.!?]*(?:[.!?]|$)/gi,'').replace(/\s*В\s+дуэте\s+с\s+[^.!?]*(?:[.!?]|$)/gi,'').trim();});}
 
-  function selectedStyles() {
-    return Array.from(document.querySelectorAll('.style-list .chip.selected')).map(function (el) { return el.textContent.trim(); }).filter(Boolean);
-  }
+function apply(){const people=document.querySelectorAll('.result-person');if(people.length>=2){const n1=people[0].querySelector('.result-person-name')?.textContent.trim()||'Персонаж I',n2=people[1].querySelector('.result-person-name')?.textContent.trim()||'Персонаж II',p1=people[0].querySelector('.character-profile p'),p2=people[1].querySelector('.character-profile p');if(p1)p1.textContent=makePortrait(n1,styles('styles1'),1);if(p2)p2.textContent=makePortrait(n2,styles('styles2'),2);}cleanPortraits();updateBandStyle();makePairArchetype();renderReviews();hideFileControls();bindImageUrls();bindPhotoUrls();bindRelationshipButtons();}
 
-  function pairNames() {
-    var n1 = (document.getElementById('name1') || {}).value || 'Первый персонаж';
-    var n2 = (document.getElementById('name2') || {}).value || 'Второй персонаж';
-    return [n1.trim() || 'Первый персонаж', n2.trim() || 'Второй персонаж'];
-  }
-
-  function makeStyleDescription(styles) {
-    var unique = [];
-    styles.forEach(function (style) { if (!unique.includes(style)) unique.push(style); });
-    var traits = unique.map(function (style) { return STYLE_TRAITS[style]; }).filter(Boolean);
-    if (!traits.length) return '';
-    if (traits.length === 1) return traits[0] + '.';
-    if (traits.length === 2) return traits[0] + ', соединённые с ' + traits[1] + '.';
-    return traits[0] + '; к ним добавляются ' + traits[1] + ' и ' + traits[2] + '.';
-  }
-
-  function updateBandStyle() {
-    var bandStyle = document.querySelector('.band-style');
-    if (!bandStyle) return;
-    var description = makeStyleDescription(selectedStyles());
-    if (description && bandStyle.textContent.trim() !== description.trim()) bandStyle.textContent = description;
-  }
-
-  function makePairArchetypeDescription() {
-    var box = document.querySelector('.archetype-box');
-    if (!box) return;
-    var p = box.querySelector('p');
-    if (!p || p.dataset.pairDescriptionApplied === '1') return;
-    var names = pairNames();
-    var styles = selectedStyles();
-    var styleText = makeStyleDescription(styles);
-    var archetype = (box.querySelector('.archetype-name') || {}).textContent || 'их общий архетип';
-    var n1 = names[0], n2 = names[1];
-    var templates = [
-      n1 + ' и ' + n2 + ' соединяют разные музыкальные темпераменты в одно узнаваемое звучание. ' + (styleText ? 'В нём встречаются ' + styleText.replace(/[.]$/, '') + '. ' : '') + 'Их общий архетип «' + archetype.trim() + '» рождается из притяжения, разницы характеров и того, как они влияют друг на друга.',
-      'Музыка ' + n1 + ' и ' + n2 + ' строится на взаимодействии двух характеров: один импульс отвечает другому, напряжение сменяется гармонией, а различия становятся частью общего звучания. Так проявляется архетип «' + archetype.trim() + '».',
-      '«' + archetype.trim() + '» — это история о том, как ' + n1 + ' и ' + n2 + ' превращают собственную динамику в музыку: в ней слышны притяжение, столкновения, уступки и моменты неожиданного совпадения.'
-    ];
-    var index = (n1.length + n2.length + styles.length) % templates.length;
-    var result = templates[index];
-    if (p.textContent.trim() !== result.trim()) p.textContent = result;
-    p.dataset.pairDescriptionApplied = '1';
-  }
-
-  function removeDuoSentenceFromPortraits() {
-    document.querySelectorAll('.character-profile p').forEach(function (p) {
-      if (p.dataset.duoRemoved === '1') return;
-      var text = p.textContent || '';
-      var cleaned = text
-        .replace(/\s*В\s+дуэте\s+с\s+[^.!?]*(?:[.!?]|$)/gi, '')
-        .trim();
-      if (cleaned !== text.trim()) p.textContent = cleaned;
-      p.dataset.duoRemoved = '1';
-    });
-  }
-
-  function refreshGeneratedText() {
-    removeDuoSentenceFromPortraits();
-    updateBandStyle();
-    makePairArchetypeDescription();
-  }
-
-  function init() {
-    hideLocalImageControls();
-    bindImageUrls();
-    bindPhotoUrls();
-    removeRedundantStyleLine();
-    removeRedundantFacts();
-    addFourthReview();
-    bindRelationshipButtons();
-    refreshGeneratedText();
-  }
-
-  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-  else init();
-
-  new MutationObserver(function () {
-    hideLocalImageControls();
-    bindImageUrls();
-    bindPhotoUrls();
-    removeRedundantStyleLine();
-    removeRedundantFacts();
-    addFourthReview();
-    refreshGeneratedText();
-  }).observe(document.documentElement, { childList: true, subtree: true });
+function init(){hideFileControls();bindImageUrls();bindPhotoUrls();bindRelationshipButtons();const observer=new MutationObserver(()=>{clearTimeout(observer._timer);observer._timer=setTimeout(()=>{const result=document.getElementById('result');if(result&&!result.classList.contains('hidden'))apply();},90);});observer.observe(document.body,{childList:true,subtree:true});document.addEventListener('click',e=>{if(e.target.closest('#generate,#again'))setTimeout(()=>{const result=document.getElementById('result');if(result&&!result.classList.contains('hidden'))apply();},120);});}
+if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+window.MUSIC_UI_ENHANCE=apply;
 })();
