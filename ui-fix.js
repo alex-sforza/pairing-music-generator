@@ -84,7 +84,6 @@
         return;
       }
 
-      if (button.classList.contains('choice')) return;
       var choice = button.closest('.choice');
       if (choice) {
         choice.querySelectorAll('button.selected').forEach(function (el) { el.classList.remove('selected'); });
@@ -93,12 +92,85 @@
     }, true);
   }
 
+  function cleanCharacterPortraits() {
+    var result = document.getElementById('result');
+    if (!result || result.classList.contains('hidden')) return;
+    result.querySelectorAll('.character-profile p').forEach(function (p) {
+      // The old portrait ended with a relationship-specific sentence such as
+      // “В дуэте с ... это приобретает оттенок ...”. Keep the character portrait
+      // about the character only; relationship wording belongs in the pair blocks.
+      var text = p.textContent || '';
+      text = text.replace(/\s*В дуэте с\s+[^.]+?\s+это приобретает оттенок\s+«[^»]*»\.?/gi, '').trim();
+      text = text.replace(/\s*В дуэте с\s+[^.]+?\.?$/gi, '').trim();
+      p.textContent = text;
+    });
+  }
+
+  function pairArchetypeDescription() {
+    var result = document.getElementById('result');
+    if (!result || result.classList.contains('hidden')) return;
+    var band = result.querySelector('.band-name');
+    var pair = result.querySelector('.pair-names');
+    var archetype = result.querySelector('.archetype-name');
+    var box = result.querySelector('.archetype-box p');
+    var bandStyle = result.querySelector('.band-style');
+    if (!band || !archetype || !box) return;
+
+    var key = band.textContent.trim() + '|' + archetype.textContent.trim() + '|' + (pair ? pair.textContent.trim() : '');
+    if (result.dataset.pairWordingKey === key) return;
+    result.dataset.pairWordingKey = key;
+
+    var names = pair ? pair.textContent.split('×').map(function(x){ return x.trim(); }) : [];
+    var n1 = document.getElementById('name1') ? document.getElementById('name1').value.trim() : (names[0] || 'Первый персонаж');
+    var n2 = document.getElementById('name2') ? document.getElementById('name2').value.trim() : (names[1] || 'Второй персонаж');
+    var s1 = document.querySelectorAll('#styles1 .chip.selected');
+    var s2 = document.querySelectorAll('#styles2 .chip.selected');
+    var styles1 = Array.from(s1).map(function(x){return x.textContent;}).slice(0,3);
+    var styles2 = Array.from(s2).map(function(x){return x.textContent;}).slice(0,3);
+    var f1 = document.querySelector('#feel1 .feeling-chip.selected strong');
+    var f2 = document.querySelector('#feel2 .feeling-chip.selected strong');
+    var feeling1 = f1 ? f1.textContent : 'разное восприятие';
+    var feeling2 = f2 ? f2.textContent : 'разное восприятие';
+    var archetypeName = archetype.textContent.trim();
+    var sound = bandStyle ? bandStyle.textContent.trim() : 'два музыкальных мира';
+
+    // This description is deliberately about the pair and their shared sound.
+    // It never reuses the one-person archetype portrait from music-archetypes.js.
+    var templates = [
+      `${n1} и ${n2} превращают ${archetypeName} в общий язык: один музыкальный мир сталкивается с другим, а разница между ними становится частью звучания группы.`,
+      `У ${n1} и ${n2} ${archetypeName} работает именно как история о двоих: их разные музыкальные привычки спорят, притягиваются и постепенно складываются в один узнаваемый звук.`,
+      `Это не портрет одного музыканта, а музыкальная химия ${n1} и ${n2}: ${archetypeName} собирает их контрасты в группу, где личные различия становятся главным достоинством.`,
+      `${n1} и ${n2} звучат вместе так, будто их отношения получили собственный жанр. ${archetypeName} — это место, где их два характера встречаются на одной сцене.`
+    ];
+    var idx = Math.abs((n1+n2+archetypeName).length) % templates.length;
+    box.textContent = templates[idx];
+
+    if (bandStyle) {
+      bandStyle.textContent = `${styles1.slice(0,2).join(' + ') || 'первый мир'} × ${styles2.slice(0,2).join(' + ') || 'второй мир'} — ${sound}`;
+    }
+
+    // Keep the relationship layer explicitly about the pair.
+    var relationBox = result.querySelector('.relation-box');
+    if (relationBox) {
+      var phraseList = relationBox.querySelector('.phrase-list');
+      if (phraseList && !relationBox.querySelector('.pair-note')) {
+        var note = document.createElement('p');
+        note.className = 'pair-note';
+        note.style.cssText = "font:italic 16px/1.45 'Cormorant Garamond';color:#b9b2bd;margin:12px 0 0";
+        note.textContent = `${n1} видит эту связь как «${feeling1}», ${n2} — как «${feeling2}». Именно это расхождение делает их общую музыку интереснее.`;
+        relationBox.appendChild(note);
+      }
+    }
+  }
+
   function bind() {
     hideLocalImageControls();
     removeRedundantStyleLine();
     removeRedundantFacts();
     addFourthReview();
     bindSelectionButtons();
+    cleanCharacterPortraits();
+    pairArchetypeDescription();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind); else bind();
