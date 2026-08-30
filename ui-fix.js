@@ -2,7 +2,6 @@
 (function () {
   'use strict';
 
-  // Only visual/UI corrections live here. The generator logic remains in index.html.
   function hideLocalImageControls() {
     document.querySelectorAll('.upload-card .file-label, .upload-card .file-name').forEach(function (el) {
       el.style.display = 'none';
@@ -61,22 +60,18 @@
   }
 
   function removeRedundantStyleLine() {
-    // Keep the pair names, but remove the separate line that repeats all selected styles.
     document.querySelectorAll('.pair-names').forEach(function (el) {
       var next = el.nextElementSibling;
       if (!next) return;
       var text = (next.textContent || '').trim();
-      var looksLikeStyleLine = /·/.test(text) && /\//.test(text) && text.length < 500;
-      if (looksLikeStyleLine) next.remove();
+      if (/·/.test(text) && /\//.test(text) && text.length < 500) next.remove();
     });
   }
 
   function removeRedundantFacts() {
     document.querySelectorAll('.fact').forEach(function (el) {
       var text = (el.textContent || '').toLowerCase();
-      if (text.includes('музыкальный архетип') || text.includes('исходные группы')) {
-        el.remove();
-      }
+      if (text.includes('музыкальный архетип') || text.includes('исходные группы')) el.remove();
     });
   }
 
@@ -92,55 +87,27 @@
     grid.appendChild(fourth);
   }
 
-  function bindSelectionButtons() {
-    if (document.documentElement.dataset.selectionFixBound === '1') return;
-    document.documentElement.dataset.selectionFixBound = '1';
+  // Relationship feelings are handled here because their buttons need to remain
+  // independent from the generator. Do NOT handle .chip here: the original
+  // generator already has the correct toggle logic for personal music worlds.
+  function bindRelationshipButtons() {
+    if (document.documentElement.dataset.feelingFixBound === '1') return;
+    document.documentElement.dataset.feelingFixBound = '1';
 
     document.addEventListener('click', function (event) {
-      var button = event.target.closest('.feeling-chip, .chip, .choice button');
+      var button = event.target.closest('.feeling-chip');
       if (!button) return;
-
-      if (button.classList.contains('feeling-chip')) {
-        var feelingList = button.closest('.feeling-list');
-        if (!feelingList) return;
-        event.preventDefault();
-        feelingList.querySelectorAll('.feeling-chip.selected').forEach(function (el) {
-          el.classList.remove('selected');
-          el.setAttribute('aria-pressed', 'false');
-        });
-        button.classList.add('selected');
-        button.setAttribute('aria-pressed', 'true');
-        feelingList.dataset.value = button.dataset.key || '';
-        return;
-      }
-
-      if (button.classList.contains('chip')) {
-        var styleList = button.closest('.style-list');
-        if (!styleList) return;
-        event.preventDefault();
-        var selected = styleList.querySelectorAll('.chip.selected');
-        if (button.classList.contains('selected')) {
-          button.classList.remove('selected');
-        } else if (selected.length < 3) {
-          button.classList.add('selected');
-        }
-        var number = styleList.id === 'styles1' ? '1' : '2';
-        var items = Array.from(styleList.querySelectorAll('.chip.selected')).map(function (el) { return el.textContent.trim(); });
-        var counter = document.getElementById('counter' + number);
-        var confirm = document.getElementById('confirm' + number);
-        if (counter) counter.textContent = items.length + ' / 3';
-        if (confirm) confirm.innerHTML = [0, 1, 2].map(function (i) {
-          return '<div class="style-confirm-item ' + (items[i] ? 'confirmed' : '') + '"><span>' + (i + 1) + '</span><b>' + (items[i] || 'Музыкальный стиль не выбран') + '</b></div>';
-        }).join('');
-        return;
-      }
-
-      var choice = button.closest('.choice');
-      if (choice) {
-        event.preventDefault();
-        choice.querySelectorAll('button.selected').forEach(function (el) { el.classList.remove('selected'); });
-        button.classList.add('selected');
-      }
+      var feelingList = button.closest('.feeling-list');
+      if (!feelingList) return;
+      event.preventDefault();
+      event.stopImmediatePropagation();
+      feelingList.querySelectorAll('.feeling-chip.selected').forEach(function (el) {
+        el.classList.remove('selected');
+        el.setAttribute('aria-pressed', 'false');
+      });
+      button.classList.add('selected');
+      button.setAttribute('aria-pressed', 'true');
+      feelingList.dataset.value = button.dataset.key || '';
     }, true);
   }
 
@@ -151,13 +118,12 @@
     removeRedundantStyleLine();
     removeRedundantFacts();
     addFourthReview();
-    bindSelectionButtons();
+    bindRelationshipButtons();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
   else init();
 
-  // Re-apply only visual fixes when the generator redraws its result.
   new MutationObserver(function () {
     hideLocalImageControls();
     bindImageUrls();
