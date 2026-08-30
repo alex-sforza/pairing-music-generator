@@ -5,122 +5,17 @@
   style.textContent='.pair-names{display:none!important}.facts .fact:nth-child(2),.facts .fact:nth-child(3){display:none!important}.band-style{font-size:17px!important;line-height:1.35!important;max-width:760px}.band-style[data-style-fixed]{font-size:0!important;line-height:1.35!important}.band-style[data-style-fixed]::after{content:attr(data-style-fixed);display:block;font-size:17px;line-height:1.35;font-style:italic}';
   document.head.appendChild(style);
 
-  var STAGE_DYNAMICS=[
-    'Один задаёт темп, второй намеренно его ломает',
-    'Один провоцирует, второй превращает провокацию в шоу',
-    'Они постоянно перехватывают друг у друга инициативу',
-    'Один держит сцену, второй заставляет её двигаться',
-    'Один создаёт напряжение, второй не даёт ему погаснуть',
-    'Они выступают так, будто каждый концерт — личный спор',
-    'Один играет на публику, второй играет на нервах первого',
-    'Один ведёт за собой, второй время от времени меняет маршрут',
-    'Они начинают как дуэт и заканчивают как соревнование',
-    'Один приносит хаос, второй удивительным образом делает его частью плана',
-    'Инициатива переходит от одного к другому почти незаметно',
-    'Один держит эмоциональный центр, второй добавляет опасную искру',
-    'Они редко стоят рядом спокойно — даже молчание между ними выглядит как часть номера',
-    'Один бросает музыкальный вызов, второй почти никогда его не оставляет без ответа',
-    'На сцене они то действуют как единое целое, то словно забывают, что вообще в одной группе',
-    'Один задаёт направление, но второй постоянно заставляет его импровизировать',
-    'Их выступления строятся на чередовании контроля и красивого срыва',
-    'Один создаёт дистанцию, второй каждый раз сокращает её прямо на сцене',
-    'Они будто спорят за внимание зала, хотя оба прекрасно знают, что выиграют вместе',
-    'Один начинает номер с холодной уверенностью, второй постепенно превращает его в эмоциональный пожар',
-    'Их сценическая динамика держится на ощущении: ещё секунда — и кто-нибудь сорвётся с импровизации',
-    'Они умеют превращать взаимное раздражение в энергию выступления',
-    'Один действует точно и выверенно, второй постоянно добавляет непредсказуемый поворот',
-    'На сцене они словно проверяют границы друг друга — и каждый раз заходят чуть дальше'
-  ];
+  var STAGE_DYNAMICS=['Один задаёт темп, второй намеренно его ломает','Один провоцирует, второй превращает провокацию в шоу','Они постоянно перехватывают друг у друга инициативу','Один держит сцену, второй заставляет её двигаться','Один создаёт напряжение, второй не даёт ему погаснуть','Они выступают так, будто каждый концерт — личный спор','Один играет на публику, второй играет на нервах первого','Один ведёт за собой, второй время от времени меняет маршрут','Они начинают как дуэт и заканчивают как соревнование','Один приносит хаос, второй удивительным образом делает его частью плана','Инициатива переходит от одного к другому почти незаметно','Один держит эмоциональный центр, второй добавляет опасную искру','Они редко стоят рядом спокойно — даже молчание между ними выглядит как часть номера','Один бросает музыкальный вызов, второй почти никогда его не оставляет без ответа','На сцене они то действуют как единое целое, то словно забывают, что вообще в одной группе','Один задаёт направление, но второй постоянно заставляет его импровизировать','Их выступления строятся на чередовании контроля и красивого срыва','Один создаёт дистанцию, второй каждый раз сокращает её прямо на сцене','Они будто спорят за внимание зала, хотя оба прекрасно знают, что выиграют вместе','Один начинает номер с холодной уверенностью, второй постепенно превращает его в эмоциональный пожар','Их сценическая динамика держится на ощущении: ещё секунда — и кто-нибудь сорвётся с импровизации','Они умеют превращать взаимное раздражение в энергию выступления','Один действует точно и выверенно, второй постоянно добавляет непредсказуемый поворот','На сцене они словно проверяют границы друг друга — и каждый раз заходят чуть дальше'];
+  var ARCHETYPE_TEXTS=['Рядом друг с другом они постоянно меняются ролями: тот, кто задаёт импульс, через мгновение уже отвечает на него. Здесь особенно хорошо работает способность одновременно тянуть друг друга вперёд и мешать друг другу остановиться.','Рядом они позволяют себе больше, чем по отдельности. Один становится поводом для смелости другого, а затем получает ответ — и эта цепочка быстро становится частью их общей истории.','Здесь нет окончательного победителя. Их динамика держится на постоянной смене инициативы: вызов, ответ, уступка, новый вызов — и ни одному из них не хочется выходить из этой игры.','Самое интересное здесь — пространство для напряжения. Они не спешат всё объяснять, зато прекрасно умеют заставить друг друга сделать следующий шаг.','Это ощущается как отдельный сюжет внутри группы: они могут быть союзниками, соперниками и соучастниками в одном эпизоде. Главное — рядом друг с другом никто из них не остаётся прежним.','Эта химия проявляется в деталях: кто первым нарушает молчание, кто провоцирует, кто отступает и кто всё-таки возвращается. Именно из этих маленьких движений складывается их узнаваемая динамика.'];
 
-  function applyStageDynamic(){
-    var facts=document.querySelectorAll('.fact');
-    for(var i=0;i<facts.length;i++){
-      var label=facts[i].querySelector('span');
-      var value=facts[i].querySelector('b');
-      if(label && value && /сценическая динамика/i.test(label.textContent)){
-        var previous=value.getAttribute('data-stage-dynamic')||'';
-        var pool=STAGE_DYNAMICS.filter(function(x){return x!==previous;});
-        value.textContent=pool[Math.floor(Math.random()*pool.length)];
-        value.setAttribute('data-stage-dynamic',value.textContent);
-        value.style.fontSize='clamp(17px,2.1vw,25px)';
-        value.style.lineHeight='1.05';
-        return true;
-      }
-    }
-    return false;
-  }
-
-  function anonymizePairText(){
-    var people=document.querySelectorAll('.result-person');
-    if(people.length>=2){
-      var names=[];
-      people.forEach(function(person){
-        var n=person.querySelector('.result-person-name');
-        if(n) names.push((n.textContent||'').trim());
-      });
-      document.querySelectorAll('.character-profile p').forEach(function(p,index){
-        var text=(p.textContent||'').trim();
-        var name=names[index];
-        if(name){
-          text=text.replace(new RegExp('У\\s+'+escapeRegExp(name),'g'),'У него (неё)');
-          text=text.replace(new RegExp('Музыкальный вкус\\s*'+escapeRegExp(name),'g'),'Его (её) музыкальный вкус');
-          text=text.replace(new RegExp('Музыкальная библиотека\\s*'+escapeRegExp(name),'g'),'Его (её) музыкальная библиотека');
-          text=text.replace(new RegExp('Плейлист\\s*'+escapeRegExp(name),'g'),'Его (её) плейлист');
-          text=text.replace(new RegExp('Для\\s+'+escapeRegExp(name),'g'),'Для него (неё)');
-          text=text.replace(new RegExp('Если\\s+'+escapeRegExp(name),'g'),'Если он (а)');
-          text=text.replace(new RegExp('^'+escapeRegExp(name)+'(?=\\s|[,.!?])'),'Он (а)');
-          text=text.replace(new RegExp('\\s'+escapeRegExp(name)+'(?=\\s|[,.!?])','g'),' он (а)');
-        }
-        p.textContent=text;
-      });
-    }
-
-    var archetype=document.querySelector('.archetype-box p');
-    if(archetype){
-      var text=archetype.textContent||'';
-      if(people.length>=2){
-        people.forEach(function(person){
-          var n=person.querySelector('.result-person-name');
-          if(n){
-            var name=(n.textContent||'').trim();
-            if(name) text=text.replace(new RegExp(''+escapeRegExp(name),'g'),'');
-          }
-        });
-      }
-      text=text.replace(/Рядом\\s+друг\\s+с\\s+другом\\s+\\s*/i,'Рядом друг с другом ');
-      text=text.replace(/У\\s+и\\s+/g,'У них ');
-      text=text.replace(/У\\s+и\\s+/g,'У них ');
-      text=text.replace(/У\\s{2,}/g,'У них ');
-      text=text.replace(/Рядом\\s+друг\\s+с\\s+другом\\s*\\s*/i,'Рядом друг с другом ');
-      archetype.textContent=text.trim();
-    }
-  }
-
+  function applyStageDynamic(){var facts=document.querySelectorAll('.fact');for(var i=0;i<facts.length;i++){var label=facts[i].querySelector('span'),value=facts[i].querySelector('b');if(label&&value&&/сценическая динамика/i.test(label.textContent)){var previous=value.getAttribute('data-stage-dynamic')||'',pool=STAGE_DYNAMICS.filter(function(x){return x!==previous;});value.textContent=pool[Math.floor(Math.random()*pool.length)];value.setAttribute('data-stage-dynamic',value.textContent);value.style.fontSize='clamp(17px,2.1vw,25px)';value.style.lineHeight='1.05';return true;}}return false;}
   function escapeRegExp(value){return String(value).replace(/[.*+?^${}()|[\\]\\]/g,'\\$&');}
-
-  function watchNextResult(){
-    var result=document.getElementById('result');
-    if(!result || !window.MutationObserver)return;
-    var observer=new MutationObserver(function(){
-      if(!result.classList.contains('hidden')){
-        applyStageDynamic();
-        anonymizePairText();
-        observer.disconnect();
-      }
-    });
-    observer.observe(result,{childList:true,subtree:true});
+  function anonymizePairText(){
+    var people=document.querySelectorAll('.result-person'),names=[];
+    people.forEach(function(person){var n=person.querySelector('.result-person-name');if(n)names.push((n.textContent||'').trim());});
+    document.querySelectorAll('.character-profile p').forEach(function(p,index){var text=(p.textContent||'').trim(),name=names[index];if(name){text=text.replace(new RegExp('У\\s+'+escapeRegExp(name),'g'),'У него (неё)');text=text.replace(new RegExp('Музыкальный вкус\\s*'+escapeRegExp(name),'g'),'Его (её) музыкальный вкус');text=text.replace(new RegExp('Музыкальная библиотека\\s*'+escapeRegExp(name),'g'),'Его (её) музыкальная библиотека');text=text.replace(new RegExp('Плейлист\\s*'+escapeRegExp(name),'g'),'Его (её) плейлист');text=text.replace(new RegExp('Для\\s+'+escapeRegExp(name),'g'),'Для него (неё)');text=text.replace(new RegExp('Если\\s+'+escapeRegExp(name),'g'),'Если он (а)');text=text.replace(new RegExp('^'+escapeRegExp(name)+'(?=\\s|[,.!?])'),'Он (а)');text=text.replace(new RegExp('\\s'+escapeRegExp(name)+'(?=\\s|[,.!?])','g'),' он (а)');}p.textContent=text;});
+    var archetype=document.querySelector('.archetype-box p');if(archetype){var previous=archetype.getAttribute('data-anonymized-arch')||'';var pool=ARCHETYPE_TEXTS.filter(function(x){return x!==previous;});archetype.textContent=pool[Math.floor(Math.random()*pool.length)];archetype.setAttribute('data-anonymized-arch',archetype.textContent);}
   }
-
-  var s=document.createElement('script');
-  s.src='ui-fix-core.js?v=20260830-stable4';
-  s.onload=function(){
-    console.info('Pairing Music Generator UI loaded');
-    watchNextResult();
-    var generate=document.getElementById('generate');
-    if(generate){
-      generate.addEventListener('click',function(){watchNextResult();},false);
-    }
-  };
-  s.onerror=function(err){console.error('UI layer load failed',err);};
-  document.head.appendChild(s);
+  function watchNextResult(){var result=document.getElementById('result');if(!result||!window.MutationObserver)return;var observer=new MutationObserver(function(){if(!result.classList.contains('hidden')){applyStageDynamic();anonymizePairText();observer.disconnect();}});observer.observe(result,{childList:true,subtree:true});}
+  var s=document.createElement('script');s.src='ui-fix-core.js?v=20260830-stable5';s.onload=function(){console.info('Pairing Music Generator UI loaded');watchNextResult();var generate=document.getElementById('generate');if(generate)generate.addEventListener('click',function(){watchNextResult();},false);};s.onerror=function(err){console.error('UI layer load failed',err);};document.head.appendChild(s);
 })();
