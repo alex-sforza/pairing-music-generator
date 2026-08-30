@@ -1,104 +1,168 @@
-// Stable UI repair layer for Pairing Music Generator
-(function(){
+// Pairing Music Generator — stable UI layer
+(function () {
   'use strict';
 
-  var feelings = [
-    ['Blood & Velvet','кроваво-бархатная'],['Midnight Neon','полуночно-неоновая'],['Cemetery Gold','кладбищенски-золотая'],['Electric Blue','электрически-синяя'],
-    ['Rust & Smoke','ржаво-дымная'],['Victorian Noir','викториански-мрачная'],['Acid Green','кислотно-зелёная'],['Moonlight','лунная'],
-    ['Crimson Devotion','багрово-преданная'],['Silver Distance','серебристо-отстранённая'],['Golden Trouble','золотисто-беспокойная'],['Black Lace','чёрно-кружевная'],
-    ['Violet Fever','фиолетово-лихорадочная'],['White Noise','бело-шумовая'],['Burnt Sugar','жжёно-сладкая'],['Cold Fire','холодно-огненная'],
-    ['Velvet Knife','бархатно-опасная'],['Neon Bruise','неоново-болезненная'],['Holy Static','свято-электрическая'],['Wild Honey','дико-медовая'],
-    ['Grave Flowers','могильно-цветочная'],['Chrome Romance','хромированно-романтическая'],['Dusk & Gold','сумрачно-золотая'],['Blackout Kiss','затменно-опасная'],
-    ['Storm & Silk','грозово-шёлковая'],['Dangerous Attraction','опасно-притягательная'],['Tender Rivalry','нежно-соперническая'],['Beautiful Chaos','прекрасно-хаотичная'],
-    ['Unspoken Feelings','непроизнесённо-нежная'],['Two Against The World','бунтарски-союзническая']
-  ];
-
-  function renderFeelings(){
-    ['feel1','feel2'].forEach(function(id){
-      var box=document.getElementById(id); if(!box) return;
-      if(box.dataset.uiFixed==='1') return;
-      box.innerHTML='';
-      feelings.forEach(function(item){
-        var b=document.createElement('button');
-        b.type='button'; b.className='feeling-chip'; b.dataset.key=item[0];
-        b.innerHTML='<strong>'+item[0]+'</strong><small>'+item[1]+'</small>';
-        box.appendChild(b);
-      });
-      box.dataset.uiFixed='1';
+  // Only visual/UI corrections live here. The generator logic remains in index.html.
+  function hideLocalImageControls() {
+    document.querySelectorAll('.upload-card .file-label, .upload-card .file-name').forEach(function (el) {
+      el.style.display = 'none';
     });
   }
 
-  function bindFeelings(){
-    document.querySelectorAll('.feeling-list').forEach(function(list){
-      if(list.dataset.bound==='1') return;
-      list.dataset.bound='1';
-      list.addEventListener('click',function(e){
-        var b=e.target.closest('.feeling-chip'); if(!b) return;
-        e.preventDefault(); e.stopPropagation();
-        list.querySelectorAll('.feeling-chip').forEach(function(x){x.classList.remove('selected');x.setAttribute('aria-pressed','false');});
-        b.classList.add('selected'); b.setAttribute('aria-pressed','true');
-        list.dataset.value=b.dataset.key||'';
-      },true);
-    });
-  }
-
-  function hideUploadButtons(){
-    document.querySelectorAll('.upload-card .file-label, .upload-card .file-name').forEach(function(el){el.style.display='none';});
-  }
-
-  function bindImageUrls(){
-    document.querySelectorAll('.upload-card .image-url-field input').forEach(function(input){
-      if(input.dataset.bound==='1') return;
-      input.dataset.bound='1';
-      input.addEventListener('input',function(){
-        var card=input.closest('.upload-card'); if(!card) return;
-        var box=card.querySelector('.aesthetic-image'); if(!box) return;
-        var url=input.value.trim();
-        if(!url){box.textContent='вставьте ссылку на изображение';return;}
-        var img=new Image();
-        img.onload=function(){box.innerHTML='';box.appendChild(img);};
-        img.onerror=function(){box.textContent='не удалось загрузить изображение';};
-        img.src=url;
-      });
-    });
-  }
-
-  function bindPhotoUrls(){
-    [['photo1','preview1'],['photo2','preview2']].forEach(function(pair){
-      var input=document.getElementById(pair[0]),box=document.getElementById(pair[1]);
-      if(!input||!box||input.dataset.bound==='1') return;
-      input.dataset.bound='1';
-      input.addEventListener('input',function(){
-        var url=input.value.trim();
-        if(!url){box.textContent='предпросмотр фото';return;}
-        var img=new Image();
-        img.onload=function(){box.innerHTML='';box.appendChild(img);};
-        img.onerror=function(){box.textContent='не удалось загрузить фото';};
-        img.src=url;
-      });
-    });
-  }
-
-  function bindGenerate(){
-    document.querySelectorAll('.main-btn').forEach(function(btn){
-      if(btn.dataset.generateFix==='1') return;
-      btn.dataset.generateFix='1'; btn.type='button';
-      btn.addEventListener('click',function(e){
-        var names=['generateAesthetic','generate','createAesthetic','makeAesthetic','generateResult','generatePairing'];
-        for(var i=0;i<names.length;i++){
-          if(typeof window[names[i]]==='function'){
-            try{window[names[i]]();}catch(err){console.error(err);} return;
-          }
+  function bindImageUrls() {
+    document.querySelectorAll('.upload-card .image-url-field input').forEach(function (input) {
+      if (input.dataset.uiUrlBound === '1') return;
+      input.dataset.uiUrlBound = '1';
+      input.addEventListener('input', function () {
+        var card = input.closest('.upload-card');
+        var preview = card && card.querySelector('.aesthetic-image');
+        if (!preview) return;
+        var url = input.value.trim();
+        if (!url) {
+          preview.textContent = 'вставьте ссылку на изображение';
+          return;
         }
-        var code=btn.getAttribute('onclick');
-        if(code){try{Function(code).call(btn);}catch(err){console.error(err);}}
-      },true);
+        var img = new Image();
+        img.onload = function () {
+          preview.innerHTML = '';
+          preview.appendChild(img);
+        };
+        img.onerror = function () {
+          preview.textContent = 'не удалось загрузить изображение';
+        };
+        img.src = url;
+      });
     });
   }
 
-  function init(){
-    renderFeelings(); bindFeelings(); hideUploadButtons(); bindImageUrls(); bindPhotoUrls(); bindGenerate();
+  function bindPhotoUrls() {
+    [['photo1', 'preview1'], ['photo2', 'preview2']].forEach(function (pair) {
+      var input = document.getElementById(pair[0]);
+      var preview = document.getElementById(pair[1]);
+      if (!input || !preview || input.dataset.uiPhotoBound === '1') return;
+      input.dataset.uiPhotoBound = '1';
+      input.addEventListener('input', function () {
+        var url = input.value.trim();
+        if (!url) {
+          preview.textContent = 'предпросмотр фото';
+          return;
+        }
+        var img = new Image();
+        img.onload = function () {
+          preview.innerHTML = '';
+          preview.appendChild(img);
+        };
+        img.onerror = function () {
+          preview.textContent = 'не удалось загрузить фото';
+        };
+        img.src = url;
+      });
+    });
   }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
-  new MutationObserver(init).observe(document.documentElement,{childList:true,subtree:true});
+
+  function removeRedundantStyleLine() {
+    // Keep the pair names, but remove the separate line that repeats all selected styles.
+    document.querySelectorAll('.pair-names').forEach(function (el) {
+      var next = el.nextElementSibling;
+      if (!next) return;
+      var text = (next.textContent || '').trim();
+      var looksLikeStyleLine = /·/.test(text) && /\//.test(text) && text.length < 500;
+      if (looksLikeStyleLine) next.remove();
+    });
+  }
+
+  function removeRedundantFacts() {
+    document.querySelectorAll('.fact').forEach(function (el) {
+      var text = (el.textContent || '').toLowerCase();
+      if (text.includes('музыкальный архетип') || text.includes('исходные группы')) {
+        el.remove();
+      }
+    });
+  }
+
+  function addFourthReview() {
+    var grid = document.querySelector('.review-grid');
+    if (!grid || grid.querySelector('[data-fourth-review="1"]')) return;
+    var reviews = grid.querySelectorAll('.review');
+    if (reviews.length < 3) return;
+    var fourth = document.createElement('article');
+    fourth.className = 'review';
+    fourth.dataset.fourthReview = '1';
+    fourth.innerHTML = '<h4>★★★★☆ · NIGHT &amp; NOISE</h4><p>«Они не столько создают музыку вместе, сколько превращают собственное напряжение в неё. Именно поэтому за их песнями хочется следить внимательнее, чем за любым пресс-релизом.»</p>';
+    grid.appendChild(fourth);
+  }
+
+  function bindSelectionButtons() {
+    if (document.documentElement.dataset.selectionFixBound === '1') return;
+    document.documentElement.dataset.selectionFixBound = '1';
+
+    document.addEventListener('click', function (event) {
+      var button = event.target.closest('.feeling-chip, .chip, .choice button');
+      if (!button) return;
+
+      if (button.classList.contains('feeling-chip')) {
+        var feelingList = button.closest('.feeling-list');
+        if (!feelingList) return;
+        event.preventDefault();
+        feelingList.querySelectorAll('.feeling-chip.selected').forEach(function (el) {
+          el.classList.remove('selected');
+          el.setAttribute('aria-pressed', 'false');
+        });
+        button.classList.add('selected');
+        button.setAttribute('aria-pressed', 'true');
+        feelingList.dataset.value = button.dataset.key || '';
+        return;
+      }
+
+      if (button.classList.contains('chip')) {
+        var styleList = button.closest('.style-list');
+        if (!styleList) return;
+        event.preventDefault();
+        var selected = styleList.querySelectorAll('.chip.selected');
+        if (button.classList.contains('selected')) {
+          button.classList.remove('selected');
+        } else if (selected.length < 3) {
+          button.classList.add('selected');
+        }
+        var number = styleList.id === 'styles1' ? '1' : '2';
+        var items = Array.from(styleList.querySelectorAll('.chip.selected')).map(function (el) { return el.textContent.trim(); });
+        var counter = document.getElementById('counter' + number);
+        var confirm = document.getElementById('confirm' + number);
+        if (counter) counter.textContent = items.length + ' / 3';
+        if (confirm) confirm.innerHTML = [0, 1, 2].map(function (i) {
+          return '<div class="style-confirm-item ' + (items[i] ? 'confirmed' : '') + '"><span>' + (i + 1) + '</span><b>' + (items[i] || 'Музыкальный стиль не выбран') + '</b></div>';
+        }).join('');
+        return;
+      }
+
+      var choice = button.closest('.choice');
+      if (choice) {
+        event.preventDefault();
+        choice.querySelectorAll('button.selected').forEach(function (el) { el.classList.remove('selected'); });
+        button.classList.add('selected');
+      }
+    }, true);
+  }
+
+  function init() {
+    hideLocalImageControls();
+    bindImageUrls();
+    bindPhotoUrls();
+    removeRedundantStyleLine();
+    removeRedundantFacts();
+    addFourthReview();
+    bindSelectionButtons();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+  else init();
+
+  // Re-apply only visual fixes when the generator redraws its result.
+  new MutationObserver(function () {
+    hideLocalImageControls();
+    bindImageUrls();
+    removeRedundantStyleLine();
+    removeRedundantFacts();
+    addFourthReview();
+  }).observe(document.documentElement, { childList: true, subtree: true });
 })();
