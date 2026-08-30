@@ -1,31 +1,104 @@
-// Pairing Music Generator — UI/language layer
-(function () {
-  var EP = {
-    'Blood & Velvet':'кроваво-бархатная','Midnight Neon':'полуночно-неоновая','Cemetery Gold':'кладбищенски-золотая','Electric Blue':'электрически-синяя','Rust & Smoke':'ржаво-дымная','Victorian Noir':'викториански-мрачная','Acid Green':'кислотно-зелёная','Moonlight':'лунная','Crimson Devotion':'багрово-преданная','Silver Distance':'серебристо-отстранённая','Golden Trouble':'золотисто-беспокойная','Black Lace':'чёрно-кружевная','Violet Fever':'фиолетово-лихорадочная','White Noise':'бело-шумовая','Burnt Sugar':'жжёно-сладкая','Cold Fire':'холодно-огненная','Velvet Knife':'бархатно-опасная','Neon Bruise':'неоново-болезненная','Holy Static':'свято-электрическая','Wild Honey':'дико-медовая','Grave Flowers':'могильно-цветочная','Chrome Romance':'хромированно-романтическая','Dusk & Gold':'сумрачно-золотая','Blackout Kiss':'затменно-опасная','Storm & Silk':'грозово-шёлковая','Dangerous Attraction':'опасно-притягательная','Tender Rivalry':'нежно-соперническая','Beautiful Chaos':'прекрасно-хаотичная','Unspoken Feelings':'непроизнесённо-нежная','Two Against The World':'бунтарски-союзническая'
-  };
-  var STYLE = {
-    'Glam Rock':'театральный рок с блеском, дерзостью и любовью к эффектным появлениям','Glam Metal':'громкий и эффектный металл с глянцевой сценичностью и большими припевами','Gothic Rock':'мрачный романтический рок с драматическими гитарами и сумрачной атмосферой','Gothic Metal':'тяжёлая готическая музыка с мрачной красотой, драмой и широким размахом','Hard Rock':'жёсткий рок с мощными риффами, прямой энергией и концертным напором','Classic Rock':'классический рок с большими гитарами, живой энергетикой и духом старой сцены','Vintage Rock':'винтажный рок с тёплым аналоговым звучанием и атмосферой старых концертов','Punk Rock':'резкий и свободолюбивый панк с нервной энергией и презрением к правилам','Industrial Rock':'механический рок с металлическим шумом, жёстким ритмом и холодной эстетикой','Industrial Metal':'тяжёлое индустриальное звучание с механической мощью и металлической жёсткостью','Symphonic Metal':'масштабный металл с оркестровой драмой, хорами и кинематографическим размахом','Heavy Metal':'мощный классический металл с тяжёлыми риффами и героической энергетикой','Progressive Metal':'сложный и масштабный металл с необычными ритмами и любовью к экспериментам','Alternative Metal':'тяжёлый альтернативный рок с необычной фактурой и личной эмоциональной интонацией','Doom Metal':'медленный и тяжёлый мрак с вязким звучанием и ощущением неизбежности','Dark Folk':'мрачный фолк с древними мотивами, лесной атмосферой и оттенком тревожной сказки','Neofolk':'аскетичный фолк с архаической атмосферой, ритуальностью и строгой красотой','Post-Punk':'нервный городской рок с холодным басом, отчуждением и сухой романтикой','Gothic Punk':'панк, пропитанный готической меланхолией, чёрным юмором и театральной дерзостью','Dream Pop':'воздушная мечтательная музыка, похожая на воспоминание или сон','Shoegaze':'туманное гитарное звучание, где мелодия растворяется в стене мягкого шума','Darkwave':'холодная сумрачная музыка с синтезаторами, меланхолией и ночной атмосферой','Synthpop':'мелодичная электронная музыка с неоном, ритмом и лёгкой поп-театральностью','Synthwave':'ностальгическая электронная музыка с ночным неоном и ощущением кинематографического будущего','Dark Pop':'тёмная поп-музыка с красивой мелодией, драмой и лёгкой опасностью','Witch House':'искажённая тёмная электроника с оккультной атмосферой и вязким ритмом','Industrial Techno':'жёсткая механическая электроника с повторяющимся ритмом и клубной интенсивностью','Dark Cabaret':'мрачное кабаре с театральностью, чёрным юмором и ощущением опасного спектакля','Theatrical Rock':'театральный рок, где каждая песня похожа на отдельную сцену','Occult Rock':'ритуальный рок с мистической символикой, тёмной сценичностью и винтажной атмосферой','Visual Kei':'театральный рок с ярким образом, драматикой и тщательно продуманной сценической эстетикой','Folk':'акустическая музыка с человеческой теплотой, историями и ощущением дороги','Celtic Folk':'кельтский фолк с древними мелодиями, живыми инструментами и ощущением легенды','Country':'дорожная музыка с простыми историями, тёплыми струнами и привкусом пыльных трасс','Americana':'корневая музыка о дороге, памяти, свободе и маленьких человеческих историях','Blues Rock':'блюзовый рок с тёплой гитарой, грувом и чувством, которое слышно между нотами','Soul':'душевная музыка с сильным вокальным чувством, теплом и эмоциональной глубиной','Funk':'ритмичная музыка с упругим грувом, танцевальностью и озорной уверенностью','Jazz':'свободная музыка с импровизацией, тонкими оттенками и любовью к неожиданным поворотам','Dark Jazz':'дымный ночной джаз с тенью нуара, медленной импровизацией и атмосферой позднего города','Ambient':'пространственная музыка, построенная на атмосфере, тишине и медленном изменении звука','Indie Rock':'искренний независимый рок с ощущением маленькой сцены и будущей культовой репутации','Alternative Rock':'альтернативный рок с личной интонацией, необычной фактурой и свободой от жанровых рамок','Garage Rock':'сырой гаражный рок с живой энергией, простыми риффами и ощущением репетиционной комнаты','Grunge':'грязноватый гитарный рок с меланхолией, внутренним кризисом и мощным припевом','Noise Rock':'шумный и резкий рок, превращающий перегруз и диссонанс в художественный приём','Power Metal':'героический металл с быстрыми риффами, высокими голосами и масштабом легенды','Folk Metal':'тяжёлый металл с народными мелодиями, древними мотивами и ощущением походной легенды','Black Metal':'ледяной экстремальный металл с мрачной атмосферой, холодом и ритуальной суровостью','Metalcore':'тяжёлая эмоциональная музыка с резкими переходами, мощными брейкдаунами и драматичными припевами','Emo':'эмоциональный рок о чувствах, внутренней драме и красивой уязвимости','Classical':'академическая музыка с драматической выразительностью, сложностью и величественной формой','Dark Classical':'мрачная классическая музыка с тревогой, глубиной и ощущением старого особняка','Electropop':'яркая электронная поп-музыка с цепкими мелодиями и сценической уверенностью','Art Pop':'изобретательная поп-музыка, превращающая мелодию в необычный художественный образ','Pop Rock':'мелодичный рок с понятными припевами, лёгкостью и концертной энергией'
-  };
-  var NAME = {
-    'Blood & Velvet':['Бархатная Рана','Алый Шёлк','Бархатное Сердце'],'Midnight Neon':['Неоновая Полночь','Полночный Свет','Город После Полуночи'],'Cemetery Gold':['Золото Памяти','Золотые Цветы','Осень Навсегда'],'Electric Blue':['Синяя Искра','Электрическое Небо','Синий Разряд'],'Rust & Smoke':['Ржавый След','Дымное Железо','Пепельный След'],'Victorian Noir':['Чёрное Кружево','Бархатная Тень','Полуночный Особняк'],'Acid Green':['Ядовитый Свет','Кислотный Сад','Зелёная Вспышка'],'Moonlight':['Лунное Молчание','Серебряная Ночь','Лунный След'],'Crimson Devotion':['Багровая Клятва','Алое Сердце','Красная Верность'],'Silver Distance':['Серебряная Даль','Холодное Расстояние','Тихое Серебро'],'Golden Trouble':['Золотая Авантюра','Искра Неприятностей','Золотой Азарт'],'Black Lace':['Чёрное Кружево','Тёмный Поцелуй','Кружевная Тень'],'Violet Fever':['Фиолетовая Лихорадка','Лиловый Жар','Фиолетовый Сон'],'White Noise':['Белый Шум','Тишина Помех','Голос Сквозь Шум'],'Burnt Sugar':['Жжёный Сахар','Сладкий Ожог','Горькая Карамель'],'Cold Fire':['Холодный Огонь','Ледяная Искра','Пламя Во Льду'],'Velvet Knife':['Бархатное Лезвие','Шёлковая Рана','Опасное Прикосновение'],'Neon Bruise':['Неоновый След','Синяк От Света','Ночная Вспышка'],'Holy Static':['Святая Искра','Шум Молитвы','Свет Сквозь Помехи'],'Wild Honey':['Дикий Мёд','Лесной Жар','Медовая Дикость'],'Grave Flowers':['Цветы На Пепле','Сад Памяти','Цветы Могилы'],'Chrome Romance':['Хромированное Сердце','Механическая Любовь','Серебряный Поцелуй'],'Dusk & Gold':['Золото Сумерек','Сумеречный Свет','Золотой Закат'],'Blackout Kiss':['Поцелуй Во Тьме','Вспышка Забвения','Ночная Искра'],'Storm & Silk':['Шёлковая Буря','Гром И Шёлк','Нежность После Грозы'],'Dangerous Attraction':['Магнитная Рана','Опасная Искра','Слишком Близко'],'Tender Rivalry':['Нежный Вызов','Красивое Соперничество','Поединок Взглядов'],'Beautiful Chaos':['Прекрасный Хаос','Безумный Танец','Искра Беспорядка'],'Unspoken Feelings':['Непроизнесённое','Молчание Между Нами','Сказанное Взглядом'],'Two Against The World':['Двое Против Неба','Вдвоём Против Мира','Наш Бунт']
-  };
-  function pick(a){return a[Math.floor(Math.random()*a.length)];}
-  function ruStyle(s){return STYLE[s]||'музыка с собственной характерной атмосферой';}
-  function cleanPortraits(){var r=document.getElementById('result');if(!r||r.classList.contains('hidden'))return;r.querySelectorAll('.character-profile p').forEach(function(p){p.textContent=(p.textContent||'').replace(/\s*В дуэте с\s+[^.]+?\s+это приобретает оттенок\s+«[^»]*»\.?/gi,'').replace(/\s*В дуэте с\s+[^.]+?\.?$/gi,'').trim();});}
-  function rewrite(){
-    var r=document.getElementById('result');if(!r||r.classList.contains('hidden'))return;
-    var band=r.querySelector('.band-name'),arch=r.querySelector('.archetype-name'),box=r.querySelector('.archetype-box p'),bs=r.querySelector('.band-style'),rel=r.querySelector('.relation-box');if(!arch||!box)return;
-    var n1=(document.getElementById('name1')||{}).value||'Первый персонаж',n2=(document.getElementById('name2')||{}).value||'Второй персонаж';
-    var s1=Array.from(document.querySelectorAll('#styles1 .chip.selected')).map(function(x){return x.textContent.trim();}).slice(0,3),s2=Array.from(document.querySelectorAll('#styles2 .chip.selected')).map(function(x){return x.textContent.trim();}).slice(0,3);
-    var f1e=document.querySelector('#feel1 .feeling-chip.selected strong'),f2e=document.querySelector('#feel2 .feeling-chip.selected strong'),f1=f1e?f1e.textContent.trim():'',f2=f2e?f2e.textContent.trim():'';
-    var key=n1+'|'+n2+'|'+arch.textContent+'|'+f1+'|'+f2+'|'+s1.join(',')+'|'+s2.join(',');if(r.dataset.finalLanguageKey===key)return;r.dataset.finalLanguageKey=key;
-    if(band&&NAME[f1])band.textContent=pick(NAME[f1]);
-    if(box){var a=ruStyle(s1[0]),b=ruStyle(s2[0]),templates=[n1+' и '+n2+' соединяют '+a+' и '+b+'. Их общий звук рождается из притяжения двух разных характеров.',n1+' и '+n2+' строят музыку на контрасте: у одного — '+a+', у другого — '+b+'. Вместе эти противоположности становятся их узнаваемым звучанием.',n1+' и '+n2+' нашли друг в друге музыкальную противоположность: '+a+' встречается с '+b+', а история пары становится частью каждой песни.'];box.textContent=templates[(n1.length+n2.length)%templates.length];}
-    if(bs)bs.textContent=(s1.length?s1.map(ruStyle).slice(0,2).join('; '):'первый музыкальный мир')+' · '+(s2.length?s2.map(ruStyle).slice(0,2).join('; '):'второй музыкальный мир');
-    if(rel){var note=rel.querySelector('.pair-note');if(!note){note=document.createElement('p');note.className='pair-note';rel.appendChild(note);}note.style.cssText="font:italic 16px/1.45 'Cormorant Garamond';color:#b9b2bd;margin:12px 0 0";note.textContent=n1+' ощущает эту связь как '+(EP[f1]||'неопределённая')+' историю, а '+n2+' — как '+(EP[f2]||'неопределённая')+' связь. В их музыке эти два восприятия встречаются и начинают спорить друг с другом.';}
+// Stable UI repair layer for Pairing Music Generator
+(function(){
+  'use strict';
+
+  var feelings = [
+    ['Blood & Velvet','кроваво-бархатная'],['Midnight Neon','полуночно-неоновая'],['Cemetery Gold','кладбищенски-золотая'],['Electric Blue','электрически-синяя'],
+    ['Rust & Smoke','ржаво-дымная'],['Victorian Noir','викториански-мрачная'],['Acid Green','кислотно-зелёная'],['Moonlight','лунная'],
+    ['Crimson Devotion','багрово-преданная'],['Silver Distance','серебристо-отстранённая'],['Golden Trouble','золотисто-беспокойная'],['Black Lace','чёрно-кружевная'],
+    ['Violet Fever','фиолетово-лихорадочная'],['White Noise','бело-шумовая'],['Burnt Sugar','жжёно-сладкая'],['Cold Fire','холодно-огненная'],
+    ['Velvet Knife','бархатно-опасная'],['Neon Bruise','неоново-болезненная'],['Holy Static','свято-электрическая'],['Wild Honey','дико-медовая'],
+    ['Grave Flowers','могильно-цветочная'],['Chrome Romance','хромированно-романтическая'],['Dusk & Gold','сумрачно-золотая'],['Blackout Kiss','затменно-опасная'],
+    ['Storm & Silk','грозово-шёлковая'],['Dangerous Attraction','опасно-притягательная'],['Tender Rivalry','нежно-соперническая'],['Beautiful Chaos','прекрасно-хаотичная'],
+    ['Unspoken Feelings','непроизнесённо-нежная'],['Two Against The World','бунтарски-союзническая']
+  ];
+
+  function renderFeelings(){
+    ['feel1','feel2'].forEach(function(id){
+      var box=document.getElementById(id); if(!box) return;
+      if(box.dataset.uiFixed==='1') return;
+      box.innerHTML='';
+      feelings.forEach(function(item){
+        var b=document.createElement('button');
+        b.type='button'; b.className='feeling-chip'; b.dataset.key=item[0];
+        b.innerHTML='<strong>'+item[0]+'</strong><small>'+item[1]+'</small>';
+        box.appendChild(b);
+      });
+      box.dataset.uiFixed='1';
+    });
   }
-  function loadFeelingFix(){if(document.querySelector('script[data-feeling-fix]'))return;var s=document.createElement('script');s.src='feelings-fix.js?v=2';s.dataset.feelingFix='1';document.body.appendChild(s);}
-  function bind(){cleanPortraits();rewrite();loadFeelingFix();}
-  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',bind);else bind();
-  new MutationObserver(function(){bind();}).observe(document.documentElement,{childList:true,subtree:true});
+
+  function bindFeelings(){
+    document.querySelectorAll('.feeling-list').forEach(function(list){
+      if(list.dataset.bound==='1') return;
+      list.dataset.bound='1';
+      list.addEventListener('click',function(e){
+        var b=e.target.closest('.feeling-chip'); if(!b) return;
+        e.preventDefault(); e.stopPropagation();
+        list.querySelectorAll('.feeling-chip').forEach(function(x){x.classList.remove('selected');x.setAttribute('aria-pressed','false');});
+        b.classList.add('selected'); b.setAttribute('aria-pressed','true');
+        list.dataset.value=b.dataset.key||'';
+      },true);
+    });
+  }
+
+  function hideUploadButtons(){
+    document.querySelectorAll('.upload-card .file-label, .upload-card .file-name').forEach(function(el){el.style.display='none';});
+  }
+
+  function bindImageUrls(){
+    document.querySelectorAll('.upload-card .image-url-field input').forEach(function(input){
+      if(input.dataset.bound==='1') return;
+      input.dataset.bound='1';
+      input.addEventListener('input',function(){
+        var card=input.closest('.upload-card'); if(!card) return;
+        var box=card.querySelector('.aesthetic-image'); if(!box) return;
+        var url=input.value.trim();
+        if(!url){box.textContent='вставьте ссылку на изображение';return;}
+        var img=new Image();
+        img.onload=function(){box.innerHTML='';box.appendChild(img);};
+        img.onerror=function(){box.textContent='не удалось загрузить изображение';};
+        img.src=url;
+      });
+    });
+  }
+
+  function bindPhotoUrls(){
+    [['photo1','preview1'],['photo2','preview2']].forEach(function(pair){
+      var input=document.getElementById(pair[0]),box=document.getElementById(pair[1]);
+      if(!input||!box||input.dataset.bound==='1') return;
+      input.dataset.bound='1';
+      input.addEventListener('input',function(){
+        var url=input.value.trim();
+        if(!url){box.textContent='предпросмотр фото';return;}
+        var img=new Image();
+        img.onload=function(){box.innerHTML='';box.appendChild(img);};
+        img.onerror=function(){box.textContent='не удалось загрузить фото';};
+        img.src=url;
+      });
+    });
+  }
+
+  function bindGenerate(){
+    document.querySelectorAll('.main-btn').forEach(function(btn){
+      if(btn.dataset.generateFix==='1') return;
+      btn.dataset.generateFix='1'; btn.type='button';
+      btn.addEventListener('click',function(e){
+        var names=['generateAesthetic','generate','createAesthetic','makeAesthetic','generateResult','generatePairing'];
+        for(var i=0;i<names.length;i++){
+          if(typeof window[names[i]]==='function'){
+            try{window[names[i]]();}catch(err){console.error(err);} return;
+          }
+        }
+        var code=btn.getAttribute('onclick');
+        if(code){try{Function(code).call(btn);}catch(err){console.error(err);}}
+      },true);
+    });
+  }
+
+  function init(){
+    renderFeelings(); bindFeelings(); hideUploadButtons(); bindImageUrls(); bindPhotoUrls(); bindGenerate();
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
+  new MutationObserver(init).observe(document.documentElement,{childList:true,subtree:true});
 })();
