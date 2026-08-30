@@ -2,7 +2,7 @@
 (function(){
   'use strict';
   var style=document.createElement('style');
-  style.textContent='.pair-names{display:none!important}.facts .fact:nth-child(2),.facts .fact:nth-child(3){display:none!important}.band-style{font-size:17px!important;line-height:1.35!important;max-width:760px}';
+  style.textContent='.pair-names{display:none!important}.facts .fact:nth-child(2),.facts .fact:nth-child(3){display:none!important}.band-style{font-size:17px!important;line-height:1.35!important;max-width:760px}.band-style[data-style-fixed]{font-size:0!important;line-height:1.35!important}.band-style[data-style-fixed]::after{content:attr(data-style-fixed);display:block;font-size:17px;line-height:1.35;font-style:italic}';
   document.head.appendChild(style);
 
   var STAGE_DYNAMICS=[
@@ -32,6 +32,70 @@
     'На сцене они словно проверяют границы друг друга — и каждый раз заходят чуть дальше'
   ];
 
+  var GROUP_STYLE={
+    'Glam Rock':'театральный рок с блеском, дерзостью и любовью к эффектным появлениям',
+    'Glam Metal':'яркий и громкий рок с гламурной театральностью и большими припевами',
+    'Gothic Rock':'мрачный романтический рок с драматическими гитарами и сумрачной атмосферой',
+    'Gothic Metal':'тяжёлая готическая музыка с драмой, мраком и красивой меланхолией',
+    'Dream Pop':'воздушная мечтательная музыка, похожая на воспоминание или сон',
+    'Shoegaze':'туманное гитарное звучание, где мелодия растворяется в стене мягкого шума',
+    'Punk Rock':'резкий и свободолюбивый панк с нервной энергией и презрением к правилам',
+    'Industrial Rock':'механический рок с металлическим шумом, жёстким ритмом и холодной эстетикой',
+    'Darkwave':'холодная сумрачная музыка с синтезаторами, меланхолией и ночной атмосферой',
+    'Hard Rock':'мощный прямолинейный рок с тяжёлыми риффами, драйвом и напором',
+    'Classic Rock':'классический рок с живыми гитарами, большими припевами и ощущением вечной сцены',
+    'Alternative Rock':'непредсказуемый альтернативный рок, который любит ломать привычные формы',
+    'Experimental Rock':'экспериментальный рок, превращающий странные идеи и неожиданные звуки в музыку',
+    'Post-Rock':'созерцательный гитарный рок, который постепенно наращивает напряжение до эмоционального финала',
+    'Indie Rock':'свободный независимый рок с личным почерком, мелодичностью и лёгкой небрежностью',
+    'Metal':'тяжёлая музыка с массивными риффами, напором и ощущением почти физической силы',
+    'Progressive Metal':'сложный и масштабный метал с длинными композициями и неожиданными поворотами',
+    'Symphonic Metal':'тяжёлая музыка с оркестровой пышностью, драмой и кинематографическим размахом',
+    'Metalcore':'агрессивная смесь тяжёлых риффов, резких переходов и эмоционального напряжения',
+    'Post-Hardcore':'нервная тяжёлая музыка, где ярость постоянно сталкивается с уязвимостью',
+    'Emo':'эмоциональный рок о внутренних конфликтах, сильных чувствах и честной уязвимости',
+    'Synthpop':'неоновая поп-музыка с синтезаторами, цепкими мелодиями и блеском ночного города',
+    'Synthwave':'ретро-футуристическая электроника с неоном, ночными трассами и атмосферой восьмидесятых',
+    'Dark Pop':'мрачный поп с красивыми мелодиями, глянцем и тревожной романтической атмосферой',
+    'Electronic':'электронная музыка, где ритм, текстуры и синтетические звуки становятся главным языком',
+    'Witch House':'тёмная гипнотическая электроника с замедленными ритмами, мистикой и ощущением сна',
+    'Dark Folk':'мрачный фолк с древними интонациями, природной образностью и ощущением старой легенды',
+    'Folk':'живой фолк с человеческим голосом, историями и ощущением дороги',
+    'Neofolk':'строгий атмосферный фолк с историческими мотивами, ритуальностью и холодной красотой',
+    'Jazz':'свободный джаз с импровизацией, сложными ритмами и любовью к неожиданным решениям',
+    'Dark Jazz':'дымный ночной джаз с медленным напряжением и ощущением пустого бара после полуночи',
+    'Blues Rock':'гитарный рок с блюзовой хрипотцой, чувством дороги и эмоциональной прямотой',
+    'Soul':'тёплая эмоциональная музыка с выразительным вокалом, грувом и человеческой близостью',
+    'Funk':'ритмичный и дерзкий фанк с упругим грувом, танцевальностью и самоуверенностью',
+    'Ambient':'пространственная музыка из атмосфер, пауз и медленно меняющихся звуковых пейзажей',
+    'Trip-Hop':'медленная тёмная смесь ритмов, электроники, баса и кинематографической меланхолии',
+    'Dark Cabaret':'театральная тёмная музыка с кабаретной иронией, гротеском и ощущением запретного представления'
+  };
+
+  function selectedStyles(id){
+    var root=document.getElementById(id);
+    return root?Array.from(root.querySelectorAll('.chip.selected')).map(function(x){return x.textContent.trim();}).filter(Boolean):[];
+  }
+
+  function applyGroupStyle(){
+    var target=document.querySelector('.band-style');
+    if(!target)return false;
+    var styles=Array.from(new Set(selectedStyles('styles1').concat(selectedStyles('styles2'))));
+    var descriptions=styles.map(function(s){return GROUP_STYLE[s];}).filter(Boolean);
+    if(!descriptions.length)return false;
+    var text;
+    if(descriptions.length===1){
+      text='В основе звучания — '+descriptions[0]+'.';
+    }else if(descriptions.length===2){
+      text='В основе звучания — '+descriptions[0]+'. К нему добавляется '+descriptions[1]+'.';
+    }else{
+      text='В основе звучания — '+descriptions[0]+'. К нему добавляются '+descriptions.slice(1,-1).join('; ')+' и '+descriptions[descriptions.length-1]+'.';
+    }
+    target.setAttribute('data-style-fixed',text);
+    target.setAttribute('aria-label',text);
+    return true;
+  }
+
   function applyStageDynamic(){
     var facts=document.querySelectorAll('.fact');
     for(var i=0;i<facts.length;i++){
@@ -54,13 +118,15 @@
     var result=document.getElementById('result');
     if(!result || !window.MutationObserver)return;
     var observer=new MutationObserver(function(){
-      if(!result.classList.contains('hidden') && applyStageDynamic()) observer.disconnect();
+      var doneStyle=applyGroupStyle();
+      var doneStage=applyStageDynamic();
+      if(!result.classList.contains('hidden') && doneStyle && doneStage) observer.disconnect();
     });
     observer.observe(result,{childList:true,subtree:true});
   }
 
   var s=document.createElement('script');
-  s.src='ui-fix-core.js?v=20260830-stable3';
+  s.src='ui-fix-core.js?v=20260830-stable4';
   s.onload=function(){
     console.info('Pairing Music Generator UI loaded');
     watchNextResult();
