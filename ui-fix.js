@@ -32,50 +32,42 @@
     'На сцене они словно проверяют границы друг друга — и каждый раз заходят чуть дальше'
   ];
 
-  function enhanceStageDynamics(){
-    function apply(){
-      var facts=document.querySelectorAll('.fact');
-      for(var i=0;i<facts.length;i++){
-        var label=facts[i].querySelector('span');
-        var value=facts[i].querySelector('b');
-        if(label && value && /сценическая динамика/i.test(label.textContent)){
-          var previous=value.getAttribute('data-stage-dynamic')||'';
-          var pool=STAGE_DYNAMICS.filter(function(x){return x!==previous;});
-          value.textContent=pool[Math.floor(Math.random()*pool.length)];
-          value.setAttribute('data-stage-dynamic',value.textContent);
-          value.style.fontSize='clamp(17px,2.1vw,25px)';
-          value.style.lineHeight='1.05';
-          return true;
-        }
+  function applyStageDynamic(){
+    var facts=document.querySelectorAll('.fact');
+    for(var i=0;i<facts.length;i++){
+      var label=facts[i].querySelector('span');
+      var value=facts[i].querySelector('b');
+      if(label && value && /сценическая динамика/i.test(label.textContent)){
+        var previous=value.getAttribute('data-stage-dynamic')||'';
+        var pool=STAGE_DYNAMICS.filter(function(x){return x!==previous;});
+        value.textContent=pool[Math.floor(Math.random()*pool.length)];
+        value.setAttribute('data-stage-dynamic',value.textContent);
+        value.style.fontSize='clamp(17px,2.1vw,25px)';
+        value.style.lineHeight='1.05';
+        return true;
       }
-      return false;
     }
+    return false;
+  }
 
-    var generate=document.getElementById('generate');
-    if(generate){
-      generate.addEventListener('click',function(){
-        var tries=0;
-        var timer=setInterval(function(){
-          tries++;
-          if(apply() || tries>=30) clearInterval(timer);
-        },100);
-      },false);
-    }
-
+  function watchNextResult(){
     var result=document.getElementById('result');
-    if(result && window.MutationObserver){
-      var observer=new MutationObserver(function(){
-        if(!result.classList.contains('hidden')) apply();
-      });
-      observer.observe(result,{childList:true,subtree:true});
-    }
+    if(!result || !window.MutationObserver)return;
+    var observer=new MutationObserver(function(){
+      if(!result.classList.contains('hidden') && applyStageDynamic()) observer.disconnect();
+    });
+    observer.observe(result,{childList:true,subtree:true});
   }
 
   var s=document.createElement('script');
-  s.src='ui-fix-core.js?v=20260830-stable2';
+  s.src='ui-fix-core.js?v=20260830-stable3';
   s.onload=function(){
     console.info('Pairing Music Generator UI loaded');
-    enhanceStageDynamics();
+    watchNextResult();
+    var generate=document.getElementById('generate');
+    if(generate){
+      generate.addEventListener('click',function(){watchNextResult();},false);
+    }
   };
   s.onerror=function(err){console.error('UI layer load failed',err);};
   document.head.appendChild(s);
