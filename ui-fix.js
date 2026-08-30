@@ -1,18 +1,9 @@
-/* Stable loader: keep the existing UI layer intact, then add generation variety and presentation refinement. */
+/* Stable loader: one UI layer, one source of truth. */
 (function(){
   'use strict';
-  function load(src){
-    return new Promise(function(resolve,reject){
-      var s=document.createElement('script');
-      s.src=src+'?v=20260830-3';
-      s.onload=resolve;
-      s.onerror=reject;
-      document.head.appendChild(s);
-    });
-  }
-  load('ui-fix-core.js')
-    .then(function(){return load('portrait-variations.js');})
-    .then(function(){return load('portrait-transition-fix.js');})
-    .then(function(){return load('presentation-fix.js');})
-    .catch(function(err){console.error('UI layer load failed',err);});
+  var s=document.createElement('script');
+  s.src='ui-fix-core.js?v=20260830-stable';
+  s.onload=function(){console.info('Pairing Music Generator UI loaded');};
+  s.onerror=function(err){console.error('UI layer load failed',err);};
+  document.head.appendChild(s);
 })();
