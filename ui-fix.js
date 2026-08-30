@@ -40,9 +40,6 @@
     grid.appendChild(fourth);
   }
 
-  // Надёжный обработчик выбора. Он работает в capture-фазе и не зависит
-  // от inline onclick в index.html, поэтому мелкие изменения генератора
-  // больше не должны отключать кнопки.
   function bindSelectionButtons() {
     if (document.documentElement.dataset.selectionFixBound === '1') return;
     document.documentElement.dataset.selectionFixBound = '1';
@@ -96,14 +93,57 @@
     var result = document.getElementById('result');
     if (!result || result.classList.contains('hidden')) return;
     result.querySelectorAll('.character-profile p').forEach(function (p) {
-      // The old portrait ended with a relationship-specific sentence such as
-      // “В дуэте с ... это приобретает оттенок ...”. Keep the character portrait
-      // about the character only; relationship wording belongs in the pair blocks.
       var text = p.textContent || '';
       text = text.replace(/\s*В дуэте с\s+[^.]+?\s+это приобретает оттенок\s+«[^»]*»\.?/gi, '').trim();
       text = text.replace(/\s*В дуэте с\s+[^.]+?\.?$/gi, '').trim();
       p.textContent = text;
     });
+  }
+
+  // Russian epithets for relationship aesthetics. The English labels remain
+  // available as selectable UI names, but the generated prose uses Russian.
+  var RELATIONSHIP_EPITHETS = {
+    'Blood & Velvet': 'кроваво-бархатная',
+    'Midnight Neon': 'полуночно-неоновая',
+    'Cemetery Gold': 'кладбищенски-золотая',
+    'Electric Blue': 'электрически-синяя',
+    'Rust & Smoke': 'ржаво-дымная',
+    'Victorian Noir': 'викториански-мрачная',
+    'Acid Green': 'кислотно-зелёная',
+    'Moonlight': 'лунная',
+    'Crimson Devotion': 'багрово-преданная',
+    'Silver Distance': 'серебристо-отстранённая',
+    'Golden Trouble': 'золотисто-беспокойная',
+    'Black Lace': 'чёрно-кружевная',
+    'Violet Fever': 'фиолетово-лихорадочная',
+    'White Noise': 'бело-шумовая',
+    'Burnt Sugar': 'жжёно-сладкая',
+    'Cold Fire': 'холодно-огненная',
+    'Velvet Knife': 'бархатно-опасная',
+    'Neon Bruise': 'неоново-болезненная',
+    'Holy Static': 'свято-электрическая',
+    'Wild Honey': 'дико-медовая',
+    'Grave Flowers': 'могильно-цветочная',
+    'Chrome Romance': 'хромированно-романтическая',
+    'Dusk & Gold': 'сумрачно-золотая',
+    'Blackout Kiss': 'затменно-поцелуйная',
+    'Storm & Silk': 'грозово-шёлковая',
+    'Dangerous Attraction': 'опасно-притягательная',
+    'Tender Rivalry': 'нежно-соперническая',
+    'Beautiful Chaos': 'прекрасно-хаотичная',
+    'Unspoken Feelings': 'непроизнесённо-нежная',
+    'Two Against The World': 'бунтарски-союзническая'
+  };
+
+  function russianRelationEpithet(value) {
+    if (!value) return 'неопределённая';
+    return RELATIONSHIP_EPITHETS[value] || value
+      .replace(/\s*&\s*/g, ' и ')
+      .replace(/\bMidnight\b/gi, 'полуночная')
+      .replace(/\bBlood\b/gi, 'кровавая')
+      .replace(/\bVelvet\b/gi, 'бархатная')
+      .replace(/\bSilver\b/gi, 'серебристая')
+      .replace(/\bMoonlight\b/gi, 'лунная');
   }
 
   function pairArchetypeDescription() {
@@ -131,16 +171,18 @@
     var f2 = document.querySelector('#feel2 .feeling-chip.selected strong');
     var feeling1 = f1 ? f1.textContent : 'разное восприятие';
     var feeling2 = f2 ? f2.textContent : 'разное восприятие';
+    var epithet1 = russianRelationEpithet(feeling1);
+    var epithet2 = russianRelationEpithet(feeling2);
     var archetypeName = archetype.textContent.trim();
     var sound = bandStyle ? bandStyle.textContent.trim() : 'два музыкальных мира';
 
-    // This description is deliberately about the pair and their shared sound.
-    // It never reuses the one-person archetype portrait from music-archetypes.js.
+    // The archetype text describes only the pair and their shared musical chemistry.
+    // It intentionally avoids meta-commentary such as “this is not a portrait...”.
     var templates = [
-      `${n1} и ${n2} превращают ${archetypeName} в общий язык: один музыкальный мир сталкивается с другим, а разница между ними становится частью звучания группы.`,
-      `У ${n1} и ${n2} ${archetypeName} работает именно как история о двоих: их разные музыкальные привычки спорят, притягиваются и постепенно складываются в один узнаваемый звук.`,
-      `Это не портрет одного музыканта, а музыкальная химия ${n1} и ${n2}: ${archetypeName} собирает их контрасты в группу, где личные различия становятся главным достоинством.`,
-      `${n1} и ${n2} звучат вместе так, будто их отношения получили собственный жанр. ${archetypeName} — это место, где их два характера встречаются на одной сцене.`
+      `${n1} и ${n2} соединяют разные музыкальные привычки в одно звучание: ${archetypeName} строится на их контрасте, притяжении и способности слышать друг друга даже там, где они спорят.`,
+      `У ${n1} и ${n2} ${archetypeName} рождается из столкновения двух характеров. Один приносит в музыку ${styles1[0] || 'свою интонацию'}, другой — ${styles2[0] || 'свою интонацию'}, и вместе они превращают разницу между собой в главный нерв группы.`,
+      `${n1} и ${n2} звучат вместе так, будто их отношения получили собственный жанр: ${archetypeName} держится на напряжении, взаимном влиянии и той странной химии, которая заставляет их музыку работать именно вдвоём.`,
+      `${n1} и ${n2} собирают ${archetypeName} из двух несовпадающих темпераментов. Их музыка то тянет их навстречу, то сталкивает лбами — и именно это движение становится её узнаваемым почерком.`
     ];
     var idx = Math.abs((n1+n2+archetypeName).length) % templates.length;
     box.textContent = templates[idx];
@@ -149,15 +191,17 @@
       bandStyle.textContent = `${styles1.slice(0,2).join(' + ') || 'первый мир'} × ${styles2.slice(0,2).join(' + ') || 'второй мир'} — ${sound}`;
     }
 
-    // Keep the relationship layer explicitly about the pair.
+    // Relationship layer: use Russian epithets instead of English aesthetic labels.
     var relationBox = result.querySelector('.relation-box');
     if (relationBox) {
       var phraseList = relationBox.querySelector('.phrase-list');
-      if (phraseList && !relationBox.querySelector('.pair-note')) {
+      var oldNote = relationBox.querySelector('.pair-note');
+      if (oldNote) oldNote.remove();
+      if (phraseList) {
         var note = document.createElement('p');
         note.className = 'pair-note';
         note.style.cssText = "font:italic 16px/1.45 'Cormorant Garamond';color:#b9b2bd;margin:12px 0 0";
-        note.textContent = `${n1} видит эту связь как «${feeling1}», ${n2} — как «${feeling2}». Именно это расхождение делает их общую музыку интереснее.`;
+        note.textContent = `${n1} ощущает эту связь как ${epithet1}, а ${n2} — как ${epithet2}. В их общей истории это превращается в особое напряжение между ними.`;
         relationBox.appendChild(note);
       }
     }
