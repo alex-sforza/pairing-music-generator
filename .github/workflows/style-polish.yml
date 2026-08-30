@@ -1,0 +1,47 @@
+name: Style polish
+on:
+  push:
+    paths:
+      - '.github/workflows/style-polish.yml'
+permissions:
+  contents: write
+jobs:
+  polish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Adjust music style controls
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('index.html')
+          s = p.read_text(encoding='utf-8')
+          old = ".chip{border:1px solid #504b58;background:#15141b;color:#c9c3cc;padding:8px 7px;cursor:pointer;font-size:8px;line-height:1.2;letter-spacing:.4px}"
+          new = ".chip{border:1px solid #504b58;background:#15141b;color:#c9c3cc;padding:10px 9px;cursor:pointer;font-size:11px;line-height:1.25;letter-spacing:.25px;min-height:42px}"
+          if old not in s:
+              raise SystemExit('chip style not found')
+          s = s.replace(old, new, 1)
+          old_js = "function makeStyleChips(id,counterId){const box=$(id);genres.forEach(g=>{const b=document.createElement('button');b.className='chip';b.textContent=g;b.onclick=()=>{const selected=[...box.querySelectorAll('.selected')];if(b.classList.contains('selected')){b.classList.remove('selected')}else if(selected.length<3){b.classList.add('selected')}$(counterId).textContent=box.querySelectorAll('.selected').length+' / 3'};box.appendChild(b)})}"
+          new_js = "function makeStyleChips(id,counterId){const box=$(id);genres.forEach(g=>{const b=document.createElement('button');b.className='chip';b.textContent=g;b.onclick=()=>{const selected=[...box.querySelectorAll('.selected')];if(b.classList.contains('selected')){b.classList.remove('selected')}else if(selected.length<3){b.classList.add('selected')}const chosen=[...box.querySelectorAll('.selected')].map(x=>x.textContent);$(counterId).textContent=chosen.length+' / 3';updateStyleConfirmation(id,chosen)};box.appendChild(b)})}"
+          if old_js not in s:
+              raise SystemExit('style function not found')
+          s = s.replace(old_js, new_js, 1)
+          marker = "makeStyleChips('styles1','counter1');makeStyleChips('styles2','counter2');"
+          insert = marker + "function updateStyleConfirmation(id,chosen){const box=$(id);let c=box.parentElement.querySelector('.style-confirmation');if(!c){c=document.createElement('div');c.className='style-confirmation';box.after(c)}c.innerHTML=[0,1,2].map(i=>'<div class=\\\"style-confirm-item '+(chosen[i]?'confirmed':'')+'\\\"><span>'+(i+1)+'</span><b>'+(chosen[i]||'Музыкальный стиль не выбран')+'</b></div>').join('')}updateStyleConfirmation('styles1',[]);updateStyleConfirmation('styles2',[]);"
+          if marker not in s:
+              raise SystemExit('style marker not found')
+          s = s.replace(marker, insert, 1)
+          css_marker = ".style-list{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;max-height:360px;overflow:auto;padding-right:3px}"
+          css_insert = css_marker + ".style-confirmation{margin-top:12px;border-top:1px solid #34313a;padding-top:9px;display:grid;gap:5px}.style-confirm-item{display:flex;align-items:center;gap:9px;padding:7px 9px;border:1px solid #2f2c35;background:#0a0a0e;color:#77727d;font-size:10px}.style-confirm-item span{width:22px;height:22px;display:grid;place-items:center;border:1px solid #44404a;font:500 13px 'Cormorant Garamond',serif}.style-confirm-item b{font-weight:500}.style-confirm-item.confirmed{color:#e0d9e4;border-color:#554c5c;background:#131119}.style-confirm-item.confirmed span{color:#111;background:#ddd1e4;border-color:#ddd1e4}"
+          if css_marker not in s:
+              raise SystemExit('style-list marker not found')
+          s = s.replace(css_marker, css_insert, 1)
+          p.write_text(s, encoding='utf-8')
+          PY
+      - name: Commit changes
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git add index.html
+          git diff --cached --quiet || git commit -m 'Improve music style selection UI'
+          git push
