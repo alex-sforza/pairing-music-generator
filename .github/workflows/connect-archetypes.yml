@@ -60,16 +60,31 @@ jobs:
 '''
           p.write_text(text + patch, encoding='utf-8')
           PY
-      - name: Patch generator connection
+      - name: Repair relationship controls and image previews
         run: |
           python - <<'PY'
           from pathlib import Path
           p = Path('index.html')
           text = p.read_text(encoding='utf-8')
-          tag = '<script src="music-archetypes.js"></script>'
-          if tag not in text:
-              text = text.replace('<script>\nconst genres=', tag + '\n<script>\nconst genres=', 1)
-              p.write_text(text, encoding='utf-8')
+          marker = '<!-- pairing-ui-repair-v3 -->'
+          if marker not in text:
+              patch = r'''<!-- pairing-ui-repair-v3 -->
+<script>
+(function(){
+  const RELATION_FEELINGS = [
+    ['Blood & Velvet','страсть, опасность и притяжение'],['Midnight Neon','ночная химия и электрическое напряжение'],['Cemetery Gold','мрачная роскошь и что-то почти святое'],['Electric Blue','холодная искра, которая всё равно бьёт током'],['Rust & Smoke','старые раны, дым и упрямое тепло'],['Victorian Noir','тайны, приличия и чувства, о которых нельзя говорить'],['Acid Green','хаос, дерзость и очень плохие решения'],['Moonlight','тихая близость, которую замечают только они'],['Crimson Devotion','преданность на грани одержимости'],['Silver Distance','чувства есть, но между ними километры'],['Golden Trouble','слишком красиво, чтобы быть хорошей идеей'],['Black Lace','опасная нежность и тщательно спрятанные эмоции'],['Violet Fever','романтика, странность и лёгкая потеря рассудка'],['White Noise','много невысказанного и слишком много мыслей'],['Burnt Sugar','сладость с привкусом катастрофы'],['Cold Fire','ледяная сдержанность и внезапные вспышки'],['Velvet Knife','нежность, которая умеет ранить'],['Neon Bruise','ярко, больно и почему-то хочется ещё'],['Holy Static','почти святое чувство с совершенно неправильным напряжением'],['Wild Honey','тепло, опасность и сладкая безрассудность'],['Grave Flowers','красота, выросшая из старых травм'],['Chrome Romance','глянец, дерзость и романтика будущего'],['Dusk & Gold','закатная меланхолия и драгоценная близость'],['Blackout Kiss','момент, который лучше не вспоминать слишком подробно'],['Storm & Silk','буря снаружи, мягкость только друг для друга'],['Paper Hearts','хрупкость, которую оба делают вид, что не замечают'],['Razor Smile','флирт, сарказм и опасная игра'],['Motel Moon','ночная свобода, бегство и случайная близость'],['Ash & Honey','после пожара всё равно осталось что-то сладкое'],['Blue Velvet','медленная чувственность и кинематографическая тоска']
+  ];
+  function render(id){const box=document.getElementById(id);if(!box||box.querySelector('.feeling-chip'))return;if(!box.children.length)return;}
+  function ensure(id){const box=document.getElementById(id);if(!box)return;if(!box.querySelector('.feeling-chip'))box.innerHTML=RELATION_FEELINGS.map(([n,d])=>'<button type="button" class="feeling-chip" data-feeling="'+n.replace(/"/g,'&quot;')+'"><strong>'+n+'</strong><small>'+d+'</small></button>').join('');if(box.dataset.repairBound==='1')return;box.dataset.repairBound='1';box.addEventListener('click',e=>{const chip=e.target.closest('.feeling-chip');if(!chip)return;e.preventDefault();e.stopPropagation();box.querySelectorAll('.feeling-chip').forEach(x=>x.classList.remove('selected'));chip.classList.add('selected');box.dataset.selected=chip.dataset.feeling||chip.textContent.trim();window.__pairingFeelings=window.__pairingFeelings||{};window.__pairingFeelings[id==='feel1'?1:2]=box.dataset.selected;},true);}
+  function imagePreview(input,target){const url=(input.value||'').trim();if(!target)return;if(!url){target.textContent='предпросмотр фото';return;}const img=new Image();img.alt='';img.onload=()=>{target.innerHTML='';target.appendChild(img);};img.onerror=()=>{target.textContent='не удалось загрузить изображение';};img.src=url;}
+  function images(){[['photo1','preview1'],['photo2','preview2']].forEach(([a,b])=>{const i=document.getElementById(a),t=document.getElementById(b);if(i&&t&&i.dataset.previewBound!=='1'){i.dataset.previewBound='1';i.addEventListener('input',()=>imagePreview(i,t));if(i.value)imagePreview(i,t);}});document.querySelectorAll('.upload-card').forEach(c=>{const i=c.querySelector('.image-url-field input'),t=c.querySelector('.aesthetic-image'),f=c.querySelector('input[type=file]');if(i&&t&&i.dataset.previewBound!=='1'){i.dataset.previewBound='1';i.addEventListener('input',()=>imagePreview(i,t));if(i.value)imagePreview(i,t);}if(f&&t&&f.dataset.previewBound!=='1'){f.dataset.previewBound='1';f.addEventListener('change',()=>{const file=f.files&&f.files[0];if(!file)return;const r=new FileReader();r.onload=e=>{t.innerHTML='<img src="'+e.target.result+'" alt="">';};r.readAsDataURL(file);});}});}
+  function init(){ensure('feel1');ensure('feel2');images();}
+  if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',init);else init();
+  new MutationObserver(init).observe(document.documentElement,{childList:true,subtree:true});
+})();
+</script>'''
+              text=text.replace('</body>',patch+'\n</body>')
+              p.write_text(text,encoding='utf-8')
           PY
       - name: Commit patch
         run: |
