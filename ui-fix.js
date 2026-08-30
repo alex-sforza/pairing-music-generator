@@ -40,11 +40,65 @@
     grid.appendChild(fourth);
   }
 
+  // Надёжный обработчик выбора. Он работает в capture-фазе и не зависит
+  // от inline onclick в index.html, поэтому мелкие изменения генератора
+  // больше не должны отключать кнопки.
+  function bindSelectionButtons() {
+    if (document.documentElement.dataset.selectionFixBound === '1') return;
+    document.documentElement.dataset.selectionFixBound = '1';
+
+    document.addEventListener('click', function (event) {
+      var button = event.target.closest('.feeling-chip, .chip, .choice button');
+      if (!button) return;
+
+      event.preventDefault();
+      event.stopImmediatePropagation();
+
+      if (button.classList.contains('feeling-chip')) {
+        var feelingList = button.closest('.feeling-list');
+        if (!feelingList) return;
+        feelingList.querySelectorAll('.feeling-chip.selected').forEach(function (el) {
+          el.classList.remove('selected');
+        });
+        button.classList.add('selected');
+        return;
+      }
+
+      if (button.classList.contains('chip')) {
+        var styleList = button.closest('.style-list');
+        if (!styleList) return;
+        var selected = styleList.querySelectorAll('.chip.selected');
+        if (button.classList.contains('selected')) {
+          button.classList.remove('selected');
+        } else if (selected.length < 3) {
+          button.classList.add('selected');
+        }
+        var number = styleList.id === 'styles1' ? '1' : '2';
+        var items = Array.from(styleList.querySelectorAll('.chip.selected')).map(function (el) { return el.textContent; });
+        var counter = document.getElementById('counter' + number);
+        var confirm = document.getElementById('confirm' + number);
+        if (counter) counter.textContent = items.length + ' / 3';
+        if (confirm) confirm.innerHTML = [0,1,2].map(function(i){
+          return '<div class="style-confirm-item ' + (items[i] ? 'confirmed' : '') + '"><span>' + (i+1) + '</span><b>' + (items[i] || 'Музыкальный стиль не выбран') + '</b></div>';
+        }).join('');
+        return;
+      }
+
+      if (button.classList.contains('choice')) return;
+      var choice = button.closest('.choice');
+      if (choice) {
+        choice.querySelectorAll('button.selected').forEach(function (el) { el.classList.remove('selected'); });
+        button.classList.add('selected');
+      }
+    }, true);
+  }
+
   function bind() {
     hideLocalImageControls();
     removeRedundantStyleLine();
     removeRedundantFacts();
     addFourthReview();
+    bindSelectionButtons();
   }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', bind); else bind();
